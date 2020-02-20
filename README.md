@@ -1,4 +1,4 @@
-# TFGSmarthome
+# TFG Smarthome
 
 Reconocimiento de imágenes para la automatización de tareas en el laboratorio Smarthome.
 
