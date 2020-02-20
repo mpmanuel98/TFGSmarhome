@@ -8,4 +8,5 @@ Usar el administrador de paquetes [pip](https://pip.pypa.io/en/stable/) para ins
 
 ```bash
 pip install requests
+pip install Pillow
 ```
