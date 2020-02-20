@@ -38,5 +38,7 @@ try:
     people = AzureFaceAPI.identifyProcess(res, "id1", "detection_01", "recognition_02")
     AzureFaceAPI.getPersonGroup("id1", True)
     print(people)
+
+    print("TEST")
 except:
     print("No se han detectado caras")
