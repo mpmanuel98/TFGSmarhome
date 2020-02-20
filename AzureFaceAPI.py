@@ -13,6 +13,8 @@ faceia_url_identify = '/face/v1.0/identify/'
 DETECT FACE
 
 In:     Imagen en la que se quiere detectar caras.
+        Modelo de deteccion (detection_01 | detection_02)
+        Modelo de reconocimiento (recognition_01 | recognition_02)
 Out:    Array con los IDs de las caras detectadas.
 """
 def detectFace(img, detectionModel, recognitionModel):
@@ -76,6 +78,8 @@ IDENTIFY PROCESS
 
 In:     Imagen en la que se quiere indentificar caras.
         ID del grupo de personas en el que se quiere identificar.
+        Modelo de deteccion (detection_01 | detection_02)
+        Modelo de reconocimiento (recognition_01 | recognition_02)
 Out:    Array con los datos completos de las personas indentificadas en la imagen de entrada.
 """
 def identifyProcess(img, idGrupo, detectionModel, recognitionModel):
@@ -98,6 +102,8 @@ def identifyProcess(img, idGrupo, detectionModel, recognitionModel):
 DETECT HUMAN PRESENCE
 
 In:     Imagen en la que se quiere detectar caras.
+        Modelo de deteccion (detection_01 | detection_02)
+        Modelo de reconocimiento (recognition_01 | recognition_02)
 Out:    True -> Presencia humana detectada.
         False -> Presencia humana no detectada.
 """
