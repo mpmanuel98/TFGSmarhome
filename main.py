@@ -1,7 +1,8 @@
+import modules.azure_faceapi
+import modules.foscam_webcams
+import modules.spacelynk_server
+import modules.sony_tv
 import time
-import serverIO
-import camIO
-import AzureFaceAPI
 
 def control_cocina():
     mot_alarm_coc = camIO.get_motion_detect_alarm(camIO.url_pruebas_casa)
