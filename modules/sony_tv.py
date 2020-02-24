@@ -4,10 +4,11 @@ import json
 #URL structure: http://[Base URL]/[service name]
 #[Base URL]: [IP]/sony
 #Example for avControl: http://192.168.0.1/sony/avControl
+#IP Tv: 192.168.7.228
 
 pre_shared_key = "1234"
 
-url_appControl = 'http://192.168.43.140/sony/appControl'
+url_appControl = 'http://192.168.7.228/sony/appControl'
 
 """
 Create JSON
@@ -56,7 +57,7 @@ def set_app():
         }
 
     params_uri = [{
-        'uri': 'com.sony.dtv.com.netflix.ninja.com.netflix.ninja.MainActivity'
+        'uri': 'com.sony.dtv.com.spotify.tv.android.com.spotify.tv.android.SpotifyTVActivity'
         #com.sony.dtv.com.google.android.youtube.tv.com.google.android.apps.youtube.tv.activity.ShellActivity
         #com.sony.dtv.com.amazon.amazonvideo.livingroom.com.amazon.ignition.IgnitionActivity
         #com.sony.dtv.com.netflix.ninja.com.netflix.ninja.MainActivity
