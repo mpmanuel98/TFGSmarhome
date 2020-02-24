@@ -1,0 +1,152 @@
+{
+   "result":[
+      [
+         {
+            "title":"Play Store",
+            "uri":"com.sony.dtv.com.android.vending.com.google.android.finsky.tvmainactivity.TvMainActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.android.vending.com.google.android.finsky.tvmainactivity.TvMainActivity.png"
+         },
+         {
+            "title":"YouTube",
+            "uri":"com.sony.dtv.com.google.android.youtube.tv.com.google.android.apps.youtube.tv.activity.ShellActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.google.android.youtube.tv.com.google.android.apps.youtube.tv.activity.ShellActivity.png"
+         },
+         {
+            "title":"Álbum",
+            "uri":"com.sony.dtv.com.sony.dtv.osat.album.com.sonyericsson.album.MainActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.sony.dtv.osat.album.com.sonyericsson.album.MainActivity.png"
+         },
+         {
+            "title":"Música",
+            "uri":"com.sony.dtv.com.sony.dtv.osat.music.com.sonyericsson.music.MusicActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.sony.dtv.osat.music.com.sonyericsson.music.MusicActivity.png"
+         },
+         {
+            "title":"TV",
+            "uri":"com.sony.dtv.com.sony.dtv.tvx.com.sony.dtv.tvx.MainActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.sony.dtv.tvx.com.sony.dtv.tvx.MainActivity.png"
+         },
+         {
+            "title":"Programme Guide",
+            "uri":"com.sony.dtv.com.sony.dtv.tvxlauncher.programguide.com.sony.dtv.tvxlauncher.programguide.MainActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.sony.dtv.tvxlauncher.programguide.com.sony.dtv.tvxlauncher.programguide.MainActivity.png"
+         },
+         {
+            "title":"Lista de títulos grabados",
+            "uri":"com.sony.dtv.com.sony.dtv.tvxlauncher.titlelist.com.sony.dtv.tvxlauncher.titlelist.MainActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.sony.dtv.tvxlauncher.titlelist.com.sony.dtv.tvxlauncher.titlelist.MainActivity.png"
+         },
+         {
+            "title":"IP Cam Viewer Lite",
+            "uri":"com.sony.dtv.com.rcreations.ipcamviewer.com.rcreations.ipcamviewer.WebCamViewerActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.rcreations.ipcamviewer.com.rcreations.ipcamviewer.WebCamViewerActivity.png"
+         },
+         {
+            "title":"Prime Video",
+            "uri":"com.sony.dtv.com.amazon.amazonvideo.livingroom.com.amazon.ignition.IgnitionActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.amazon.amazonvideo.livingroom.com.amazon.ignition.IgnitionActivity.png"
+         },
+         {
+            "title":"Play Música",
+            "uri":"com.sony.dtv.com.google.android.music.com.google.android.music.tv.HomeActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.google.android.music.com.google.android.music.tv.HomeActivity.png"
+         },
+         {
+            "title":"Play Juegos",
+            "uri":"com.sony.dtv.com.google.android.play.games.com.google.android.apps.play.games.app.atv.features.home.HomeActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.google.android.play.games.com.google.android.apps.play.games.app.atv.features.home.HomeActivity.png"
+         },
+         {
+            "title":"Play Películas",
+            "uri":"com.sony.dtv.com.google.android.videos.com.google.android.videos.tv.presenter.activity.TvLauncherActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.google.android.videos.com.google.android.videos.tv.presenter.activity.TvLauncherActivity.png"
+         },
+         {
+            "title":"Netflix",
+            "uri":"com.sony.dtv.com.netflix.ninja.com.netflix.ninja.MainActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.netflix.ninja.com.netflix.ninja.MainActivity.png"
+         },
+         {
+            "title":"Tutoriales de BRAVIA",
+            "uri":"com.sony.dtv.com.sony.dtv.bravialifehack.com.sony.dtv.bravialifehack.LifeHackActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.sony.dtv.bravialifehack.com.sony.dtv.bravialifehack.LifeHackActivity.png"
+         },
+         {
+            "title":"Vídeo",
+            "uri":"com.sony.dtv.com.sony.dtv.osat.video.com.sonyericsson.video.browser.BrowserActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.sony.dtv.osat.video.com.sonyericsson.video.browser.BrowserActivity.png"
+         },
+         {
+            "title":"Ayuda",
+            "uri":"com.sony.dtv.com.sony.dtv.smarthelp.com.sony.dtv.smarthelp.activity.MainActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.sony.dtv.smarthelp.com.sony.dtv.smarthelp.activity.MainActivity.png"
+         },
+         {
+            "title":"Configuración de control del TV con Amazon Alexa",
+            "uri":"com.sony.dtv.com.sony.dtv.smarthomesettings.com.sony.dtv.smarthomesettings.activity.MainActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.sony.dtv.smarthomesettings.com.sony.dtv.smarthomesettings.activity.MainActivity.png"
+         },
+         {
+            "title":"Sony Select",
+            "uri":"com.sony.dtv.com.sony.dtv.sonyselect.com.sony.dtv.sonyselect.activities.LaunchActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.sony.dtv.sonyselect.com.sony.dtv.sonyselect.activities.LaunchActivity.png"
+         },
+         {
+            "title":"Temporizadores",
+            "uri":"com.sony.dtv.com.sony.dtv.timers.com.sony.dtv.activity.TimersMainActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.sony.dtv.timers.com.sony.dtv.activity.TimersMainActivity.png"
+         },
+         {
+            "title":"Internet Browser",
+            "uri":"com.sony.dtv.com.vewd.core.integration.dia.com.vewd.core.integration.dia.SonyBrowserUiActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.vewd.core.integration.dia.com.vewd.core.integration.dia.SonyBrowserUiActivity.png"
+         },
+         {
+            "title":"Réplica de pantalla",
+            "uri":"com.sony.dtv.screnmirroring.com.screnmirroring.com.StartScreenMirroringHomeActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.screnmirroring.com.screnmirroring.com.StartScreenMirroringHomeActivity.png"
+         },
+         {
+            "title":"Clan Android TV",
+            "uri":"com.sony.dtv.com.rtve.clan_androidtv.com.rtve.clan_androidtv.Screen.SplashScreen",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.rtve.clan_androidtv.com.rtve.clan_androidtv.Screen.SplashScreen.png"
+         },
+         {
+            "title":"Spotify",
+            "uri":"com.sony.dtv.com.spotify.tv.android.com.spotify.tv.android.SpotifyTVActivity",
+            "icon":"http:\/\/192.168.43.140\/DIAL\/icon\/com.sony.dtv.com.spotify.tv.android.com.spotify.tv.android.SpotifyTVActivity.png"
+         },
+         {
+            "title":"Rakuten TV: Tu cine en casa",
+            "uri":"com.sony.dtv.sonyselect-ES-WUAKI_NBIV",
+            "icon":"https:\/\/images.erabu.sony.tv\/icons\/2fd72fc1-8cd2-4366-b51e-da796f9bba0b.png"
+         },
+         {
+            "title":"Digital Concert Hall",
+            "uri":"com.sony.dtv.ceb-5114",
+            "icon":"http:\/\/static.internet.sony.tv\/bivl-ww\/static\/service\/icons\/service_55\/sub_1\/x180.png"
+         },
+         {
+            "title":"Rakuten TV",
+            "uri":"com.sony.dtv.ceb-5206",
+            "icon":"http:\/\/static.internet.sony.tv\/bivl-ww\/static\/service\/icons\/service_381\/x180.png"
+         },
+         {
+            "title":"Televisió de Catalunya",
+            "uri":"com.sony.dtv.ceb-5208",
+            "icon":"http:\/\/static.internet.sony.tv\/bivl-ww\/static\/service\/icons\/service_47\/sub_1\/x180.png"
+         },
+         {
+            "title":"DW for Smart TV",
+            "uri":"com.sony.dtv.ceb-5226",
+            "icon":"http:\/\/static.internet.sony.tv\/bivl-ww\/static\/service\/icons\/service_551\/x180.png"
+         },
+         {
+            "title":"Meteonews TV",
+            "uri":"com.sony.dtv.ceb-5216",
+            "icon":"http:\/\/static.internet.sony.tv\/bivl-ww\/static\/service\/icons\/service_382\/x180.png"
+         }
+      ]
+   ],
+   "id":60
+}

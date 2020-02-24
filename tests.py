@@ -4,7 +4,6 @@ import modules.spacelynk_server as SS
 import modules.sony_tv as ST
 import requests
 import xml.etree.ElementTree as ET
-from PIL import Image
 import io
 import time
 
@@ -27,4 +26,5 @@ url_dormitorio = "http://192.168.7.222:8891/cgi-bin/CGIProxy.fcgi?"
 # URL de acceso a la camara en mi casa
 url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
-ST.get_app_list()
+#ST.get_app_list()
+ST.set_app()
