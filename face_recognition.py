@@ -5,31 +5,9 @@ import os
 #numpy to convert python lists to numpy arrays as it is needed by OpenCV face recognizers
 import numpy as np
 from PIL import Image
+import time
 
 filename = 'imagenes/imagen3.jpg'
-
-def detect_face(img):
-    #convert the test image to gray scale as opencv face detector expects gray images
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    #load OpenCV face detector, I am using LBP which is fast
-    #there is also a more accurate but slow: Haar classifier
-    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-
-    #let's detect multiscale images(some images may be closer to camera than others)
-    #result is a list of faces
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.25, minNeighbors=5)
-
-    #if no faces are detected then return original img
-    if (len(faces) == 0):
-        return None, None
-
-    #under the assumption that there will be only one face,
-    #extract the face area
-    x, y, w, h = faces[0]
-
-    #return only the face part of the image
-    return gray[y:y+w, x:x+h], faces[0]
 
 def prepare_training_data(data_folder_path):
 
@@ -110,6 +88,29 @@ def draw_rectangle(img, rect):
 def draw_text(img, text, x, y):
     cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
 
+def detect_face(img):
+    #convert the test image to gray scale as opencv face detector expects gray images
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    #load OpenCV face detector, I am using LBP which is fast
+    #there is also a more accurate but slow: Haar classifier
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+
+    #let's detect multiscale images(some images may be closer to camera than others)
+    #result is a list of faces
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.25, minNeighbors=5)
+
+    #if no faces are detected then return original img
+    if (len(faces) == 0):
+        return gray, None
+
+    #under the assumption that there will be only one face,
+    #extract the face area
+    x, y, w, h = faces[0]
+
+    #return only the face part of the image
+    return gray[y:y+w, x:x+h], faces[0]
+
 #this function recognizes the person in image passed
 #and draws a rectangle around detected face with name of the 
 #subject
@@ -124,12 +125,18 @@ def predict(test_img):
     #get name of respective label returned by face recognizer
     label_text = subjects[label[0]]
 
-    #draw a rectangle around face detected
-    draw_rectangle(img, rect)
-    #draw name of predicted person
-    draw_text(img, label_text, rect[0], rect[1]-5)
-
+    print(label_text)
     return img, subjects[label[0]]
+"""
+    try:
+        #draw a rectangle around face detected
+        draw_rectangle(img, rect)
+        #draw name of predicted person
+        draw_text(img, label_text, rect[0], rect[1]-5)
+    except:
+        print("No hay caras que resaltar")
+"""
+
 
 
 #there is no label 0 in our training data so subject name for index/label 0 is empty
@@ -161,8 +168,25 @@ face_recognizer.train(faces, np.array(labels))
 
 print("Predicting images...")
 
+
+cap = cv2.VideoCapture('rtsp://admin:AmgCam18*@192.168.1.50:554/videoMain')
+
+while(True):
+    ret, frame = cap.read()
+
+    predicted_img1, namelab = predict(frame)
+
+    cv2.imshow(subjects[1], predicted_img1)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+
+"""
 #load test images
-test_img1 = cv2.imread("imagenes/imagenTest2.jpg")
+test_img1 = cv2.imread("imagenes/imagenTest3.jpg")
 
 #perform a prediction
 predicted_img1, namelab = predict(test_img1)
@@ -172,4 +196,4 @@ print(namelab)
 #display both images
 cv2.imshow(subjects[1], predicted_img1)
 cv2.waitKey(0)
-cv2.destroyAllWindows()
+cv2.destroyAllWindows()"""
