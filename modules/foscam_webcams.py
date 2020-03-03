@@ -246,5 +246,6 @@ Out:    Bytes de la imagen con la captura.
 """
 def take_snap(url_camara):
     state_result = requests.get(url_camara, params=params_take_snap)
+    #image = Image.open(io.BytesIO(state_result.content))
     return state_result.content
 
