@@ -108,12 +108,10 @@ def predict(test_img):
 
     for face in face_list:
         label = face_recognizer.predict(face[0])
-        print(label)
         #get name of respective label returned by face recognizer
         label_text = subjects[label[0]]
-
+        print(face[0])
         people_identified.append(label_text)
-    
 
     return people_identified
 
@@ -134,10 +132,10 @@ print("Total faces: ", len(faces))
 print("Total labels: ", len(labels))
 
 #create our LBPH face recognizer 
-#face_recognizer = cv2.face.LBPHFaceRecognizer_create()
+face_recognizer = cv2.face.LBPHFaceRecognizer_create(radius=1, neighbors=2)
 
 #or use EigenFaceRecognizer by replacing above line with 
-face_recognizer = cv2.face.EigenFaceRecognizer_create()
+#face_recognizer = cv2.face.EigenFaceRecognizer_create()
 
 #or use FisherFaceRecognizer by replacing above line with 
 #face_recognizer = cv2.face.FisherFaceRecognizer_create()
@@ -152,14 +150,12 @@ print("Predicting images...")
 url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
 while True:
-    # Load image and convert to grayscale:
+    # Take a frame from the webcam
     frame = camIO.take_snap(url_pruebas_casa)
-
     image = Image.open(io.BytesIO(frame))
-
     image = np.asarray(image)
 
-    #load test images
+    #test image
     test_img1 = cv2.imread("imagenes/imagenTest3.jpg")
 
     #perform a prediction
@@ -170,7 +166,6 @@ while True:
         print("No se han detectado caras")
     else:
         for person in people:
-            #display both images
             print(person)
 
     time.sleep(1)
