@@ -68,6 +68,30 @@ def detect_face(img):
     #Pasamos la imagen a escala de grises, esto es necesario para realizar el procesamiento
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
+    """
+    print("Tamaño original : ", gray.shape)
+
+    #Escala nueva imagen
+    scale_percent = 75
+    width = int(gray.shape[1] * (scale_percent / 100))
+    height = int(gray.shape[0] * (scale_percent / 100))
+    dim = (width, height)
+    #Redimensionar imagen
+    resized = cv2.resize(gray, dim, interpolation = cv2.INTER_AREA)
+
+    print("Tamaño disminuido : ", resized.shape)
+
+    #Ecualizacion del histograma (para suavizar los cambios de iluminacion)
+    equ = cv2.equalizeHist(gray)
+
+    #Aplicando filtro bilatreal para realizar un suavizado de la imagen
+    blur = cv2.bilateralFilter(equ,9,75,75)
+    """
+
+    #Para ver las caras que se detectan
+    cv2.imshow("Test", gray)
+    cv2.waitKey(250)
+
     #El clasificador Haar es mas preciso pero mas lento de procesamiento
     #face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt.xml")
@@ -75,7 +99,7 @@ def detect_face(img):
     #face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt_tree.xml")
 
     #Obtenemos la lista de imagenes detectadas
-    faces_detected = face_cascade.detectMultiScale(gray, scaleFactor=1.2)
+    faces_detected = face_cascade.detectMultiScale(gray, scaleFactor=1.25)
 
     #Si no hay caras detectadas devolvemos None
     if (len(faces_detected) == 0):
