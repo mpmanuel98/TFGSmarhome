@@ -6,175 +6,190 @@ import modules.foscam_webcams as camIO
 from PIL import Image
 import time
 
-
+#Funcion para preparar las listas de personas y etiquetas para el entrenamiento
 def prepare_training_data(data_folder_path):
 
-    #get the directories (one directory for each subject) in data folder
+    #Se hace un listado de los directorios que hay en la ruta 'data_folder_path'
     directories = os.listdir(data_folder_path)
 
-    #list to hold all subject faces
+    #Lista para guardar las caras para el entrenamiento
     faces = []
-    #list to hold labels for all subjects
+
+    #Lista para guardar las etiquetas asociadas a las caras de la lista anterior
     labels = []
 
-    #let's go through each directory and read images within it
+    #Recorremos cada uno de los directorios que se encuentran en la ruta 'data_folder_path'
     for dir_name in directories:
 
-        #our subject directories start with the prefix 'Persona_' so
+        #Los directorios que contienen imagenes de caras para el entrenamiento tienen el prefijo 'Persona_'
         if dir_name.startswith("Persona_"):
-            #------STEP-2--------
-            #extract label number of subject from dir_name
-            #format of dir name => Persona_label
-            #removing the prefix 'Persona_' from dir_name will give us label
+
+            #Obtenemos la etiqueta del nombre del directorio que contiene la persona
+            #Formato del nombre del directorio => Persona_'etiqueta'
+            #Quitando el prefijo 'Persona_' del nombre del directorio obtenemos la etiqueta
             label = int(dir_name.replace("Persona_", ""))
 
-            #build path of directory containing images for current subject subject
-            #sample subject_dir_path = "training-data/s1"
+            #Creamos la ruta del directorio que contiene a una persona concatenando el directorio raiz 'data_folder_path' con el nombre del directorio de una persona
             subject_dir_path = data_folder_path + "/" + dir_name
 
-            #get the images names that are inside the given subject directory
+            #Obtenemos la lista de imagenes de caras de una persona de su directorio
             subject_images_names = os.listdir(subject_dir_path)
 
-            #------STEP-3--------
-            #go through each image name, read image, 
-            #detect face and add face to list of faces
+            #Entramos en la ruta de cada imagen, la leemos, detectamos caras y añadimos la cara y la etiqueta a sus respectivos arrays de salida
             for image_name in subject_images_names:
-                #build image path
-                #sample image path = training-data/s1/1.pgm
+
+                #Creamos la ruta a la imagen concatenando la ruta raiz de la persona con el nombre de la imagen
                 image_path = subject_dir_path + "/" + image_name
 
-                #read image
+                #Leemos la imagen
                 image = cv2.imread(image_path)
 
-                #display an image window to show the image 
-                print("Training on image...", image_name)
+                #Mensaje informativo de que imagen esta siendo procesada
+                print("Training on image: ", image_name)
 
-                #detect face
+                #Obtenemos la lista de caras detectadas en la imagen
                 detected_faces = detect_face(image)
 
-                #if there aren't detected faces
+                #Si no se han detectado caras, se pasa a la siguiente imagen; en caso contrario se añaden la cara y la etiqueta a sus respectivos arrays de salida
                 if detected_faces is None:
                     continue
-
-                for face in detected_faces:
-                    #add face to list of faces
-                    faces.append(face[0])
-                    #add label for this face
-                    labels.append(label)
+                else:
+                    for face in detected_faces:
+                        #Se añade la cara a su array de salida
+                        faces.append(face)
+                        #Se añade la etiqueta a su array de salida
+                        labels.append(label)
 
     return faces, labels
 
+#Funcion para detectar caras en la imagen 'img'
 def detect_face(img):
-    #convert the test image to gray scale as opencv face detector expects gray images
+
+    #Pasamos la imagen a escala de grises, esto es necesario para realizar el procesamiento
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-
-    #is more accurate but slow: Haar classifier
-    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    #face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt.xml")
+    #El clasificador Haar es mas preciso pero mas lento de procesamiento
+    #face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt.xml")
     #face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt2.xml")
     #face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt_tree.xml")
 
-    #let's detect multiscale images(some images may be closer to camera than others)
-    #result is a list of faces
-    faces_detected = face_cascade.detectMultiScale(gray, scaleFactor=1.1)
-    print(faces_detected)
-    #if no faces are detected then return original img
+    #Obtenemos la lista de imagenes detectadas
+    faces_detected = face_cascade.detectMultiScale(gray, scaleFactor=1.2)
+
+    #Si no hay caras detectadas devolvemos None
     if (len(faces_detected) == 0):
         return None
 
+    #Lista para guardar la informacion de cada una de las caras detectadas
     faces_info = []
 
+    #Recorremos cada una de las caras detectadas
     for element in faces_detected:
-        face = []
-        x, y, w, h = element
-        face.append(gray[y:y+w, x:x+h])
 
-        faces_info.append(face)
+        #Posiciones dentro de la imagen de la cara detectada
+        x, y, w, h = element
+
+        #Añadimos unicamente la parte de la imagen donde se encuentra la cara
+        faces_info.append(gray[y:y+w, x:x+h])
+
+        #Para ver las caras que se detectan
+        cv2.imshow("Test", gray[y:y+w, x:x+h])
+        cv2.waitKey(250)
 
     return faces_info
 
-#this function recognizes the person in image passed
-def predict(test_img):
-    #make a copy of the image as we don't want to change original image
-    img = test_img.copy()
-    #detect faces from the image
+#Funcion para reconocer a la persona que se halla en la imagen pasada
+def predict(img):
+
+    #Detectamos caras en la imagen
     face_list = detect_face(img)
 
-    people_identified = []
-
+    #Si no hay caras detectadas devolvemos None
     if face_list is None:
         return None
 
+    #Lista para guardar la informacion de cada una de las caras identificadas
+    people_identified = []
+
+    #Recorremos cada una de las caras detectadas
     for face in face_list:
-        label = face_recognizer.predict(face[0])
-        #get name of respective label returned by face recognizer
-        label_text = subjects[label[0]]
-        print(face[0])
-        people_identified.append(label_text)
+
+        #Usamos el reconocedor para identificar la cara detectada
+        info_recognizer = face_recognizer.predict(face)
+        
+        #Lista para guardar la informacion de la persona identificada
+        person = []
+
+        #Obtenemos la etiqueta correspondiente a la persona identificada
+        label_text = nombre_personas[info_recognizer[0]]
+
+        #Añadimos la etiqueta a la persona identificada
+        person.append(label_text)
+
+        #Añadimos la confiabilidad a la persona identificada
+        person.append(info_recognizer[1])
+
+        #Añadimos la persona a la lista de personas identificadas
+        people_identified.append(person)
 
     return people_identified
 
-#there is no label 0 in our training data so subject name for index/label 0 is empty
-subjects = ["", "Manuel", "Pepe"]
+#Nombre asociado a cada etiqueta: 0 => Nadie | 1 => Manuel
+nombre_personas = ["", "Manuel"]
 
 
-#let's first prepare our training data
-#data will be in two lists of same size
-#one list will contain all the faces
-#and the other list will contain respective labels for each face
-print("Preparing data...")
+#Obtenemos las listas necesarias para el entrenamiento
+print("Preparing training data...")
 faces, labels = prepare_training_data("training-data")
 print("Data prepared")
 
-#print total faces and labels
+#Mostramos el total de caras y etiquetas obtenido (debe ser el mismo, una etiqueta por cara)
 print("Total faces: ", len(faces))
 print("Total labels: ", len(labels))
 
-#create our LBPH face recognizer 
-face_recognizer = cv2.face.LBPHFaceRecognizer_create(radius=1, neighbors=2)
+#Creamos el reconocedor facial LBPH
+face_recognizer = cv2.face.LBPHFaceRecognizer_create(radius=1, neighbors=8)
 
-#or use EigenFaceRecognizer by replacing above line with 
+#Creamos el reconocedor facial EigenFaceRecognizer
 #face_recognizer = cv2.face.EigenFaceRecognizer_create()
 
-#or use FisherFaceRecognizer by replacing above line with 
+#Creamos el reconocedor facial FisherFaceRecognizer
 #face_recognizer = cv2.face.FisherFaceRecognizer_create()
 
-#train our face recognizer of our training faces
+#Entrenamos el reconocedor con las dos listas obtenidas anteriormente
+print("Starting training...")
 face_recognizer.train(faces, np.array(labels))
+print("Training finished")
 
-print("Predicting images...")
-
+print("\nSTARTING FACIAL RECOGNITION PROCESS")
 
 # URL de acceso a la camara en mi casa
 url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
 while True:
-    # Take a frame from the webcam
+    #Obtenemos un frame de la camara IP
     frame = camIO.take_snap(url_pruebas_casa)
-    image = Image.open(io.BytesIO(frame))
-    image = np.asarray(image)
 
-    #test image
+    #Abrimos la imagen en formato RGB
+    pil_image = Image.open(io.BytesIO(frame))
+    image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
+
+    #Para ver las caras que se detectan
+    cv2.imshow("Test", image)
+    cv2.waitKey(250)
+
+    #Imagen para tests
     test_img1 = cv2.imread("imagenes/imagenTest3.jpg")
 
-    #perform a prediction
+    #Se realiza un reconocimiento de la imagen
     people = predict(image)
-    print("Prediction complete")
 
+    #Si no se detectan caras, se informa. En caso de exito, se muestra el nombre de la persona reconocida y la confiabilidad del reconocimiento
     if people is None:
         print("No se han detectado caras")
     else:
         for person in people:
-            print(person)
+            print(person[0], person[1])
 
     time.sleep(1)
-
-
-"""
-image = cv2.imread("training-data/Persona_2/imagenTestPepe.jpg")
-faces = detect_face(image)
-
-for face in faces:
-    print(face)
-"""

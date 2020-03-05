@@ -3,6 +3,8 @@ import xml.etree.ElementTree as ET
 from PIL import Image
 import io
 import base64
+import cv2
+import os
 
 ##########################################
 ################## URLs ##################
@@ -249,3 +251,10 @@ def take_snap(url_camara):
     #image = Image.open(io.BytesIO(state_result.content))
     return state_result.content
 
+"""
+Guarda en 'name_dest' la captura tomada de la camara con URL 'url_camara'
+"""
+def take_and_save_snap(url_camara, name_dest):
+    state_result = requests.get(url_camara, params=params_take_snap)
+    pil_image = Image.open(io.BytesIO(state_result.content))
+    pil_image.save(name_dest)
