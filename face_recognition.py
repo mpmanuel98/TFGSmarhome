@@ -195,7 +195,7 @@ while True:
     #Obtenemos un frame de la camara IP
     frame = camIO.take_snap(url_pruebas_casa)
 
-    #Abrimos la imagen en formato RGB
+    #Abrimos la imagen
     pil_image = Image.open(io.BytesIO(frame))
     image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
 

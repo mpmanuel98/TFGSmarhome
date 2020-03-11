@@ -30,7 +30,7 @@ url_dormitorio = "http://192.168.7.222:8891/cgi-bin/CGIProxy.fcgi?"
 # URL de acceso a la camara en mi casa
 url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
-for i in range(21, 1000):
+for i in range(1, 1000):
     name = "test" + str(i)
     name = name + ".jpeg"
     FWC.take_and_save_snap(url_pruebas_casa, name)
