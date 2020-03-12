@@ -82,10 +82,10 @@ def detect_face(img):
     print("Tamaño disminuido : ", resized.shape)
 
     #Ecualizacion del histograma (para suavizar los cambios de iluminacion)
-    equ = cv2.equalizeHist(gray)
+    #equ = cv2.equalizeHist(resized)
 
     #Aplicando filtro bilatreal para realizar un suavizado de la imagen
-    blur = cv2.bilateralFilter(equ,9,75,75)
+    #blur = cv2.bilateralFilter(equ,9,75,75)
     """
 
     #Para ver las caras que se detectan

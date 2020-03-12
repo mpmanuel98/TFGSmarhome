@@ -5,13 +5,13 @@ import cv2
 import os
 
 # path to input directory of faces + images
-dataset_path = "dataset"
+dataset_path = "recognition_encodings/dataset"
 
 # path to serialized db of facial encodings
-encodings_path = "encodings.pickle"
+encodings_path = "recognition_encodings/encodings.pickle"
 
 # face detection model to use: either 'hog' or 'cnn'
-detection_method = "hog"
+detection_method = "cnn"
 
 # grab the paths to the input images in our dataset
 print("[INFO] quantifying faces...")

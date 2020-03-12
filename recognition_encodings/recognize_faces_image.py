@@ -3,16 +3,24 @@ import face_recognition
 import pickle
 import cv2
 import dlib
+import foscam_webcams as camIO
+from PIL import Image
+import io
+import numpy as np
+from collections import Counter
+
+# URL de acceso a la camara en mi casa
+url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
 # allowing dlib to compute using the gpu for faster results
 dlib.DLIB_USE_CUDA = True
 dlib.USE_AVX_INSTRUCTIONS = True
 
 # path to serialized db of known facial encodings
-encodings_path = "encodings.pickle"
+encodings_path = "recognition_encodings/encodings.pickle"
 
 # path to input image
-image_path = "examples/example_02.png"
+image_path = "recognition_encodings/examples/example_04.png"
 
 # face detection model to use: either 'hog' or 'cnn'
 detection_method = "hog"
@@ -20,9 +28,18 @@ detection_method = "hog"
 # load the known faces and embeddings
 print("[INFO] loading known encodings...")
 data = pickle.loads(open(encodings_path, "rb").read())
+name_counter = Counter(data['names'])
 
 # load the input image and convert it to RGB
 image = cv2.imread(image_path)
+
+#Obtenemos un frame de la camara IP
+frame = camIO.take_snap(url_pruebas_casa)
+
+#Abrimos la imagen
+pil_image = Image.open(io.BytesIO(frame))
+image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
+
 rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 # detect the (x, y)-coordinates of the bounding boxes corresponding
@@ -44,17 +61,32 @@ for encoding in encodings:
 
 	# check to see if we have found a match
 	if True in matches:
+		# find the indexes of all matched faces then initialize a
+		# dictionary to count the total number of times each face
+		# was matched
+		matchedIds = []
+		for (index, boolean_value) in enumerate(matches):
+			if(boolean_value):
+				matchedIds.append(index)
+		print(matchedIds)
 
 		counts = {}
-		for i in range(0, len(matches)):
+
+		# loop over the matched indexes and maintain a count for
+		# each recognized face
+		for i in matchedIds:
 			name = data["names"][i]
 			counts[name] = counts.get(name, 0) + 1
 
-		# determine the recognized face with the largest number of
-		# votes (note: in the event of an unlikely tie Python will
-		# select first entry in the dictionary)
+		# loop over the identified names and calculate the confidence for
+		# each recognized face
+		for name in counts:
+			counts[name] = counts.get(name, 0) / name_counter[name]
+
+		print(counts)
+		# get the key whose value is the largest
 		name = max(counts, key=counts.get)
-	
+
 	# update the list of names
 	names.append(name)
 

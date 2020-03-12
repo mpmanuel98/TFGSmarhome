@@ -1,5 +1,5 @@
-import modules.azure_faceapi
-import modules.foscam_webcams
+import modules.azure_faceapi as AFA
+import modules.foscam_webcams as FW
 import modules.spacelynk_server
 import requests
 import xml.etree.ElementTree as ET
@@ -27,28 +27,28 @@ url_dormitorio = "http://192.168.7.222:8891/cgi-bin/CGIProxy.fcgi?"
 url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
 try:
-    res = camIO.take_snap(url_pruebas_casa)
+    res = FW.take_snap(url_pruebas_casa)
 
-    people = AzureFaceAPI.identifyProcess(res, "id2", "detection_01", "recognition_01")
-    AzureFaceAPI.getPersonGroup("id2", True)
+    people = AFA.identifyProcess(res, "id2", "detection_01", "recognition_01")
+    AFA.getPersonGroup("id2", True)
     print(people)
 
     time.sleep(10)
 
-    people = AzureFaceAPI.identifyProcess(res, "id1", "detection_01", "recognition_02")
-    AzureFaceAPI.getPersonGroup("id1", True)
+    people = AFA.identifyProcess(res, "id1", "detection_01", "recognition_02")
+    AFA.getPersonGroup("id1", True)
     print(people)
 
     time.sleep(10)
     
-    people = AzureFaceAPI.identifyProcess(res, "id2", "detection_02", "recognition_01")
-    AzureFaceAPI.getPersonGroup("id2", True)
+    people = AFA.identifyProcess(res, "id2", "detection_02", "recognition_01")
+    AFA.getPersonGroup("id2", True)
     print(people)
 
     time.sleep(10)
 
-    people = AzureFaceAPI.identifyProcess(res, "id1", "detection_02", "recognition_02")
-    AzureFaceAPI.getPersonGroup("id1", True)
+    people = AFA.identifyProcess(res, "id1", "detection_02", "recognition_02")
+    AFA.getPersonGroup("id1", True)
     print(people)
 except:
     print("No se han detectado caras")
