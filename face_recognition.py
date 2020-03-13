@@ -191,9 +191,12 @@ print("\nSTARTING FACIAL RECOGNITION PROCESS")
 # URL de acceso a la camara en mi casa
 url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
+# URL de acceso a la camara de la TV
+url_cam_tv = "http://192.168.7.226:8895/cgi-bin/CGIProxy.fcgi?"
+
 while True:
     #Obtenemos un frame de la camara IP
-    frame = camIO.take_snap(url_pruebas_casa)
+    frame = camIO.take_snap(url_cam_tv)
 
     #Abrimos la imagen
     pil_image = Image.open(io.BytesIO(frame))

@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 from PIL import Image
 import io
 import base64
-import cv2
+#import cv2
 import os
 
 ##########################################

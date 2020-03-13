@@ -12,6 +12,9 @@ from collections import Counter
 # URL de acceso a la camara en mi casa
 url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
+# URL de acceso a la camara de la TV
+url_cam_tv = "http://192.168.7.226:8895/cgi-bin/CGIProxy.fcgi?"
+
 # allowing dlib to compute using the gpu for faster results
 dlib.DLIB_USE_CUDA = True
 dlib.USE_AVX_INSTRUCTIONS = True
@@ -34,7 +37,7 @@ name_counter = Counter(data['names'])
 image = cv2.imread(image_path)
 
 #Obtenemos un frame de la camara IP
-frame = camIO.take_snap(url_pruebas_casa)
+frame = camIO.take_snap(url_cam_tv)
 
 #Abrimos la imagen
 pil_image = Image.open(io.BytesIO(frame))
