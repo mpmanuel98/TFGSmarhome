@@ -6,7 +6,7 @@ import requests
 import xml.etree.ElementTree as ET
 import io
 import time
-import face_recognition as FR
+#import face_recognition as FR
 import recognition_opencv as ROCV
 from PIL import Image
 import cv2
@@ -68,7 +68,7 @@ i = 100
 while True:
     
     #Obtenemos un frame de la camara IP
-    frame = FWC.take_snap(url_pruebas_casa)
+    frame = FWC.take_snap(url_salon)
 
     #Abrimos la imagen
     pil_image = Image.open(io.BytesIO(frame))
