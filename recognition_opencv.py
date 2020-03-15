@@ -1,36 +1,28 @@
 import cv2
 import os
-import io
-import numpy as np
-import modules.foscam_webcams as camIO
-from PIL import Image
-import time
 
 #Funcion para preparar las listas de personas y etiquetas para el entrenamiento
-def prepare_training_data(data_folder_path):
+def create_training_structures(samples_path):
 
-    #Se hace un listado de los directorios que hay en la ruta 'data_folder_path'
-    directories = os.listdir(data_folder_path)
+    #Se hace un listado de los directorios que hay en la ruta 'samples_path'
+    directories = os.listdir(samples_path)
 
-    #Lista para guardar las caras para el entrenamiento
+    #Creacion de las estructuras para el posterior entrenamiento
     faces = []
-
-    #Lista para guardar las etiquetas asociadas a las caras de la lista anterior
     labels = []
 
-    #Recorremos cada uno de los directorios que se encuentran en la ruta 'data_folder_path'
+    #Recorremos cada uno de los directorios que se encuentran en la ruta 'samples_path'
     for dir_name in directories:
 
-        #Los directorios que contienen imagenes de caras para el entrenamiento tienen el prefijo 'Persona_'
+        #Los directorios validos para el entrenamiento tienen el prefijo 'Persona_'
         if dir_name.startswith("Persona_"):
 
             #Obtenemos la etiqueta del nombre del directorio que contiene la persona
             #Formato del nombre del directorio => Persona_'etiqueta'
-            #Quitando el prefijo 'Persona_' del nombre del directorio obtenemos la etiqueta
             label = int(dir_name.replace("Persona_", ""))
 
-            #Creamos la ruta del directorio que contiene a una persona concatenando el directorio raiz 'data_folder_path' con el nombre del directorio de una persona
-            subject_dir_path = data_folder_path + "/" + dir_name
+            #Creamos la ruta del directorio que contiene a una persona concatenando el directorio raiz 'samples_path' con el nombre del directorio de una persona
+            subject_dir_path = samples_path + "/" + dir_name
 
             #Obtenemos la lista de imagenes de caras de una persona de su directorio
             subject_images_names = os.listdir(subject_dir_path)
@@ -45,7 +37,7 @@ def prepare_training_data(data_folder_path):
                 image = cv2.imread(image_path)
 
                 #Mensaje informativo de que imagen esta siendo procesada
-                print("Training on image: ", image_name)
+                print("Procesando la imagen: ", image_name)
 
                 #Obtenemos la lista de caras detectadas en la imagen
                 detected_faces = detect_face(image)
@@ -76,7 +68,7 @@ def detect_face(img):
     #blur = cv2.bilateralFilter(equ,9,75,75)
     """
 
-    #El clasificador Haar es mas preciso pero mas lento de procesamiento
+    #Se hace uso del clasificador Haar
     #face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt.xml")
     #face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt2.xml")

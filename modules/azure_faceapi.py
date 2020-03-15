@@ -25,19 +25,30 @@ def detectFace(img, detectionModel, recognitionModel):
     params = {
         'returnFaceId': 'true',
         'detectionModel': detectionModel,
-        'recognitionModel': recognitionModel
+        'recognitionModel': recognitionModel,
+        'returnFaceAttributes': 'age,blur,exposure,noise'
     }
 
     urlreq = endpoint + faceia_url_detect
 
     response = requests.post(url=urlreq, headers=headers, params=params, data=img)
     responseJson = response.json()
+    print(responseJson)
+    image_details = dict()
+    image_details["age"] = []
+    image_details["blur"] = []
+    image_details["noise"] = []
+    image_details["exposure"] = []
 
     faceIdsList = []
     for face in responseJson:
-        faceIdsList.append(face.get('faceId'))
+        faceIdsList.append(face.get("faceId"))
+        image_details["age"].append(face.get("faceAttributes").get("age"))
+        image_details["blur"].append(face.get("faceAttributes").get("blur").get("value"))
+        image_details["noise"].append(face.get("faceAttributes").get("noise").get("value"))
+        image_details["exposure"].append(face.get("faceAttributes").get("exposure").get("value"))
 
-    return faceIdsList
+    return faceIdsList, image_details
 
 """
 IDENTIFY FACE
@@ -83,7 +94,7 @@ In:     Imagen en la que se quiere indentificar caras.
 Out:    Array con los datos completos de las personas indentificadas en la imagen de entrada.
 """
 def identifyProcess(img, idGrupo, detectionModel, recognitionModel):
-    arrayFaces = detectFace(img, detectionModel, recognitionModel)
+    arrayFaces, _ = detectFace(img, detectionModel, recognitionModel)
     identifiedPeople = identifyFace(arrayFaces, idGrupo)
 
     people = []
