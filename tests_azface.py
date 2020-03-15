@@ -58,15 +58,13 @@ except:
 """
 
 #Imagen para tests
-data = open("imagenes/Manu/Tests/imagenTest3.jpg", 'rb').read()
+#data = open("imagenes/Manu/Tests/imagenTest3.jpg", 'rb').read()
 
 img = FW.take_snap(url_pruebas_casa)
 
-detected_faces, details = AFA.detectFace(data, "detection_01", "recognition_02")
+#detected_faces = AFA.detectFace(img, "detection_01", "recognition_02")
 
-test = AFA.identifyProcess(data, "id1", "detection_01", "recognition_02")
+test = AFA.identifyProcess(img, "id1", "detection_01", "recognition_02")
 print(test)
-print(detected_faces)
-print(details)
 
 

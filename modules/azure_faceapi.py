@@ -33,22 +33,20 @@ def detectFace(img, detectionModel, recognitionModel):
 
     response = requests.post(url=urlreq, headers=headers, params=params, data=img)
     responseJson = response.json()
-    print(responseJson)
-    image_details = dict()
-    image_details["age"] = []
-    image_details["blur"] = []
-    image_details["noise"] = []
-    image_details["exposure"] = []
-
-    faceIdsList = []
+    
+    faces_detected = []
     for face in responseJson:
-        faceIdsList.append(face.get("faceId"))
-        image_details["age"].append(face.get("faceAttributes").get("age"))
-        image_details["blur"].append(face.get("faceAttributes").get("blur").get("value"))
-        image_details["noise"].append(face.get("faceAttributes").get("noise").get("value"))
-        image_details["exposure"].append(face.get("faceAttributes").get("exposure").get("value"))
+        face_item = dict()
+        face_item["idFace"] = face.get("faceId")
+        face_item["faceRectangle"] = face.get("faceRectangle")
+        face_item["age"] = face.get("faceAttributes").get("age")
+        face_item["blur"] = face.get("faceAttributes").get("blur").get("value")
+        face_item["noise"] = face.get("faceAttributes").get("noise").get("value")
+        face_item["exposure"] = face.get("faceAttributes").get("exposure").get("value")
 
-    return faceIdsList, image_details
+        faces_detected.append(face_item)
+
+    return faces_detected
 
 """
 IDENTIFY FACE
@@ -94,8 +92,13 @@ In:     Imagen en la que se quiere indentificar caras.
 Out:    Array con los datos completos de las personas indentificadas en la imagen de entrada.
 """
 def identifyProcess(img, idGrupo, detectionModel, recognitionModel):
-    arrayFaces, _ = detectFace(img, detectionModel, recognitionModel)
-    identifiedPeople = identifyFace(arrayFaces, idGrupo)
+    detected_faces = detectFace(img, detectionModel, recognitionModel)
+    face_list = []
+    print(detected_faces)
+    for face in detected_faces:
+        face_list.append(face.get("idFace"))
+
+    identifiedPeople = identifyFace(face_list, idGrupo)
 
     people = []
     for faces in identifiedPeople:
@@ -314,7 +317,7 @@ def listPGPerson(idGrupo):
 
 # TESTING
 
-# IDs
+# IDs grupo 1
 # Persona 'Manuel Marín Peral': e8b11968-ad6a-4dee-8873-4025cffab8a5
 # Cara 'Imagen1': 720d0c92-8bcf-408b-b226-3dcb78eb5dc6
 # Cara 'Imagen2': cb1a1b14-946d-4ccf-9fae-867e72386b01
@@ -322,17 +325,23 @@ def listPGPerson(idGrupo):
 # Cara 'Imagen4': b4795e66-a92f-4af8-840c-47ce7dce7573
 # Cara 'Imagen5': 7ad7e239-9507-4d3e-a0ff-3bc9fdbd9fec
 
+#Persona 'Juan Jose Escarabajal Hinojo': 589aa5b8-47ce-4e76-9304-46c7c6ac43ae
+# Cara 'Imagen1': 499e6bd2-bc4f-47bc-a4ea-c90f66a47954
+# Cara 'Imagen2': cf23b479-e6fe-4394-961c-a8db81819884
+
 # Todos los pasos desde crear el PersonGroup hasta comprobar el estado del entrenamiento de este
 #listPersonGroup()
 #createPersonGroup("id1", "grupo1", "Grupo de Personas 1", "recognition_02")
 #getPersonGroup("id1", True)
-#createPGPerson("id1", "Manuel Marin Peral", "Persona 1 del Grupo 1")
-#getPGPerson("id1", "e8b11968-ad6a-4dee-8873-4025cffab8a5")
+#createPGPerson("id1", "Juan Jose Escarabajal Hinojo", "Persona 2 del Grupo 1")
+#print(getPGPerson("id1", "589aa5b8-47ce-4e76-9304-46c7c6ac43ae"))
 #listPGPerson("id1")
-#addFacePGPerson("id1", "e8b11968-ad6a-4dee-8873-4025cffab8a5", "C:\\Users\\Administrator\\Desktop\\Program\\Imagenes\\imagen5.jpg", "Imagen5")
-#getFacePGPerson("id1", "e8b11968-ad6a-4dee-8873-4025cffab8a5", "7ad7e239-9507-4d3e-a0ff-3bc9fdbd9fec")
+#addFacePGPerson("id1", "589aa5b8-47ce-4e76-9304-46c7c6ac43ae", "C:\\Users\\Manuel\\GitRepos\\TFGSmarhome\\imaganes-entrenamiento\\Persona_2\\imagen98.png", "Imagen2")
+#getFacePGPerson("id1", "589aa5b8-47ce-4e76-9304-46c7c6ac43ae", "cf23b479-e6fe-4394-961c-a8db81819884")
 #trainPersonGroup("id1")
 #getTrainingStatus("id1")
+
+
 
 # IDs grupo 2
 # Persona 'Manuel Marín Peral': 22084147-57e0-4058-86e5-1b5ac018f3b5

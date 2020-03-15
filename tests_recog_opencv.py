@@ -34,7 +34,7 @@ nombre_personas = ["", "Manuel", "Juanjo"]
 
 #Obtenemos las listas necesarias para el entrenamiento
 print("Creando las estructuras para el entrenamiento...")
-faces, labels = ROCV.create_training_structures("imaganes-entrenamiento")
+faces, labels = ROCV.create_training_structures("imagenes-entrenamiento")
 
 #Mostramos el total de caras y etiquetas obtenido (debe ser el mismo, una etiqueta por cara)
 print("Caras totales: ", len(faces))
@@ -77,9 +77,9 @@ while True:
 
     #Si no se detectan caras, se informa. En caso de exito, se muestra el nombre de la persona reconocida y la confiabilidad del reconocimiento
     if people is None:
-        print("No se han detectado caras", i)
+        print("No se han detectado caras")
     else:
         for person in people:
-            print(person[0], person[1], i)
+            print(person[0], person[1])
     
     time.sleep(0.5)
