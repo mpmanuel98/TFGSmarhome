@@ -1,5 +1,5 @@
-import camIO
-import serverIO
+import modules.foscam_webcams as camIO
+import modules.spacelynk_server as serverIO
 
 serverIO.luz_cocina_off()
 serverIO.luz_dormitorio_off()
@@ -11,4 +11,3 @@ serverIO.bajar_persiana_bano()
 serverIO.bajar_persiana_cocina()
 serverIO.bajar_estor_aula()
 serverIO.bajar_estor_dormitorio()
-serverIO.bajar_estor_salon()

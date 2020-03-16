@@ -9,6 +9,7 @@ import json
 pre_shared_key = "1234"
 
 url_appControl = 'http://192.168.7.228/sony/appControl'
+url_system = 'http://192.168.7.228/sony/system'
 
 """
 Create JSON
@@ -22,6 +23,38 @@ def create_json(idReq, method, params, version):
         "version": version
     }
 
+"""
+Set Power Status
+
+In:     True (boolean) - Encender la television.
+        False (boolean) - Apagar la television.
+"""
+def set_power_status(status):
+    headers = {
+        'Content-Type': 'application/json',
+        'charset': 'UTF-8',
+        'X-Auth-PSK': pre_shared_key
+        }
+
+    json_req = create_json(55, "setPowerStatus", [{"status": status}], "1.0")
+
+    response = requests.post(url=url_system, headers=headers, json=json_req)
+
+"""
+Set Text Form   ¿NO FUNCIONA?
+ 
+In:     msg - ¿Mensaje a mostrar? ¿Como se muestra?
+"""
+def set_text_form(msg):
+    headers = {
+        'Content-Type': 'application/json',
+        'charset': 'UTF-8',
+        'X-Auth-PSK': pre_shared_key
+        }
+
+    json_req = create_json(601, "setTextForm", ["hello world!!"], "1.0")
+
+    response = requests.post(url=url_appControl, headers=headers, json=json_req)
 
 """
 Get Application List
@@ -38,15 +71,22 @@ def get_app_list():
 
     response = requests.post(url=url_appControl, headers=headers, json=json_req)
     response_json = response.json()
-    print(response.text)
+
     apps = response_json.get('result')
     lista_apps = []
 
-    for apps in apps[0]:
-        item = apps
+    for app_info in apps[0]:
+        app = dict()
+        app_name = app_info.get("title")
+        app[app_name] = app_info.get("uri")
+        lista_apps.append(app)
+    
+    return lista_apps
 
 """
 Set active app
+
+In:     app - App para lanzar (netflix, spotify, youtube, prime-video)
 
 """
 def set_app(app):
@@ -79,4 +119,6 @@ def set_app(app):
     print(response.text)
     response_json = response.json()
 
+for app in get_app_list():
+    print(app)
 

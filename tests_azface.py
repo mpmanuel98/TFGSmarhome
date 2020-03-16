@@ -27,7 +27,6 @@ url_dormitorio = "http://192.168.7.222:8891/cgi-bin/CGIProxy.fcgi?"
 # URL de acceso a la camara en mi casa
 url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
-"""
 try:
     res = FW.take_snap(url_pruebas_casa)
 
@@ -54,17 +53,4 @@ try:
     print(people)
 except:
     print("No se han detectado caras")
-
-"""
-
-#Imagen para tests
-#data = open("imagenes/Manu/Tests/imagenTest3.jpg", 'rb').read()
-
-img = FW.take_snap(url_pruebas_casa)
-
-#detected_faces = AFA.detectFace(img, "detection_01", "recognition_02")
-
-test = AFA.identifyProcess(img, "id1", "detection_01", "recognition_02")
-print(test)
-
 
