@@ -118,7 +118,3 @@ def set_app(app):
     response = requests.post(url=url_appControl, headers=headers, json=json_req)
     print(response.text)
     response_json = response.json()
-
-for app in get_app_list():
-    print(app)
-
