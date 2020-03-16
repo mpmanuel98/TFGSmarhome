@@ -12,7 +12,6 @@ import cv2
 import numpy as np
 import os
 
-
 ##########################################
 ################## URLs ##################
 ##########################################
@@ -46,6 +45,7 @@ limit = 10
 #Queremos obtener 'limit' imagenes por persona para el entrenamiento
 while(not ((subject1_counter == limit) and (subject2_counter == limit))):
 
+    print("Tomando imagen de muestra...")
     img = FWC.take_snap(url_pruebas_casa)
     #data = open("imagenes/Manu/Tests/imagenTest3.jpg", 'rb').read()
 

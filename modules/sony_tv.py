@@ -49,20 +49,29 @@ def get_app_list():
 Set active app
 
 """
-def set_app():
+def set_app(app):
     headers = {
         'Content-Type': 'application/json',
         'charset': 'UTF-8',
         'X-Auth-PSK': pre_shared_key
         }
 
-    params_uri = [{
-        'uri': 'com.sony.dtv.com.spotify.tv.android.com.spotify.tv.android.SpotifyTVActivity'
-        #com.sony.dtv.com.google.android.youtube.tv.com.google.android.apps.youtube.tv.activity.ShellActivity
-        #com.sony.dtv.com.amazon.amazonvideo.livingroom.com.amazon.ignition.IgnitionActivity
-        #com.sony.dtv.com.netflix.ninja.com.netflix.ninja.MainActivity
-        #com.sony.dtv.com.spotify.tv.android.com.spotify.tv.android.SpotifyTVActivity
-    }]
+    if(app == "netflix"):
+        params_uri = [{
+            'uri': 'com.sony.dtv.com.netflix.ninja.com.netflix.ninja.MainActivity'
+        }]
+    elif(app == "spotify"):
+        params_uri = [{
+            'uri': 'com.sony.dtv.com.spotify.tv.android.com.spotify.tv.android.SpotifyTVActivity'
+        }]
+    elif(app == "prime-video"):
+         params_uri = [{
+            'uri': 'com.sony.dtv.com.amazon.amazonvideo.livingroom.com.amazon.ignition.IgnitionActivity'
+        }]
+    elif(app == "youtube"):
+        params_uri = [{
+            'uri': 'com.sony.dtv.com.google.android.youtube.tv.com.google.android.apps.youtube.tv.activity.ShellActivity'
+        }]
 
     json_req = create_json(601, "setActiveApp", params_uri, "1.0")
 

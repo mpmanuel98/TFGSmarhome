@@ -28,7 +28,6 @@ url_cam_tv = "http://192.168.7.226:8895/cgi-bin/CGIProxy.fcgi?"
 # URL de acceso a la camara en mi casa
 url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
-
 #Nombre asociado a cada etiqueta: 0 => Nadie | 1 => Manuel | 2 => Juanjo
 nombre_personas = ["", "Manuel", "Juanjo"]
 
