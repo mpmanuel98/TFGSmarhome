@@ -10,12 +10,13 @@ pre_shared_key = "1234"
 
 url_appControl = 'http://192.168.7.228/sony/appControl'
 url_system = 'http://192.168.7.228/sony/system'
+url_avControl = 'http://192.168.7.228/sony/avContent'
 
 """
 Create JSON
 
 """
-def create_json(idReq, method, params, version):
+def format_params(idReq, method, params, version):
     return {
         "id": idReq,
         "method": method,
@@ -36,9 +37,10 @@ def set_power_status(status):
         'X-Auth-PSK': pre_shared_key
         }
 
-    json_req = create_json(55, "setPowerStatus", [{"status": status}], "1.0")
+    params = format_params(55, "setPowerStatus", [{"status": status}], "1.0")
 
-    response = requests.post(url=url_system, headers=headers, json=json_req)
+    response = requests.post(url=url_system, headers=headers, json=params)
+    print(response.text)
 
 """
 Set Text Form   ¿NO FUNCIONA?
@@ -52,9 +54,10 @@ def set_text_form(msg):
         'X-Auth-PSK': pre_shared_key
         }
 
-    json_req = create_json(601, "setTextForm", ["hello world!!"], "1.0")
+    params = format_params(601, "setTextForm", ["hello world!!"], "1.0")
 
-    response = requests.post(url=url_appControl, headers=headers, json=json_req)
+    response = requests.post(url=url_appControl, headers=headers, json=params)
+    print(response.text)
 
 """
 Get Application List
@@ -67,9 +70,9 @@ def get_app_list():
         'X-Auth-PSK': pre_shared_key
         }
 
-    json_req = create_json(60, "getApplicationList", [], "1.0")
+    params = format_params(60, "getApplicationList", [], "1.0")
 
-    response = requests.post(url=url_appControl, headers=headers, json=json_req)
+    response = requests.post(url=url_appControl, headers=headers, json=params)
     response_json = response.json()
 
     apps = response_json.get('result')
@@ -112,9 +115,29 @@ def set_app(app):
         params_uri = [{
             'uri': 'com.sony.dtv.com.google.android.youtube.tv.com.google.android.apps.youtube.tv.activity.ShellActivity'
         }]
+    elif(app == "clantv"):
+        params_uri = [{
+            'uri': 'com.sony.dtv.com.rtve.clan_androidtv.com.rtve.clan_androidtv.Screen.SplashScreen'
+        }]
+    elif(app == "meteonews"):
+        params_uri = [{
+            'uri': 'com.sony.dtv.ceb-5216'
+        }]
 
-    json_req = create_json(601, "setActiveApp", params_uri, "1.0")
+    params = format_params(601, "setActiveApp", params_uri, "1.0")
 
-    response = requests.post(url=url_appControl, headers=headers, json=json_req)
+    response = requests.post(url=url_appControl, headers=headers, json=params)
     print(response.text)
-    response_json = response.json()
+
+def set_hdmi_source(port):
+    headers = {
+        'Content-Type': 'application/json',
+        'charset': 'UTF-8',
+        'X-Auth-PSK': pre_shared_key
+        }
+
+    uri = "extInput:hdmi?port=" + str(port)
+    params = format_params(101, "setPlayContent", [{"uri": uri}], "1.0")
+
+    response = requests.post(url=url_avControl, headers=headers, json=params)
+    print(response.text)

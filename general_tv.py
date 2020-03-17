@@ -31,7 +31,8 @@ url_cam_tv = "http://192.168.7.226:8895/cgi-bin/CGIProxy.fcgi?"
 # URL de acceso a la camara en mi casa
 url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
-##########################################
+def reset_counters():
+    return 0, 0, 0, 0, 0, 0
 
 print("Comenzando pre-procesamiento...")
 
@@ -42,8 +43,8 @@ nombre_personas = ["", "Manuel", "Juanjo"]
 faces, labels = ROCV.create_training_structures("imagenes-entrenamiento")
 
 #Mostramos el total de caras y etiquetas obtenido (debe ser el mismo, una etiqueta por cara)
-print("Caras para el reconocimiento totales: ", len(faces))
-print("Etiquetas para el reconocimiento totales: ", len(labels))
+print("Caras totales para el reconocimiento: ", len(faces))
+print("Etiquetas totales para el reconocimiento: ", len(labels))
 
 print("\nCreando y entrenando el reconocedor facial...")
 #Creamos el reconocedor facial LBPH
@@ -61,12 +62,16 @@ print("Finalizado el pre-procesamiento correctamente.")
 
 print("\nCOMENZANDO PROCESO DE RECONOCIMIENTO FACIAL")
 
+#Inicializando contadores y demas variables
 cont_manu = 0
 cont_juanjo = 0
-cont_joven = 0
-cont_adulto = 0
+cont_rango1 = 0
+cont_rango2 = 0
+cont_rango3 = 0
+cont_rango4 = 0
 limit = 3
-refresh_time = 5
+refresh_time = 3
+detected_faces = []
 
 while True:
     img = FWC.take_snap(url_pruebas_casa)
@@ -97,43 +102,56 @@ while True:
                     continue
                 else:
                     for face_info in detected_faces:
-                        print(face_info.get("age"))
-                        #Si la persona detectada pero no reconocida tiene menos de cierta edad se incrementa su contador, si tiene mas incrementa el suyo
-                        if(face_info.get("age") < 27):
-                            cont_joven += 1
-                        else:
-                            cont_adulto += 1
-    
-    if(cont_manu == limit):
+                        edad = face_info.get("age")
+                        print("Persona de " + str(edad) + " años detectada.")
+                        #Se incrementa el contador del rango de edad correspondiente para la cara detectada
+                        if(edad < 18):
+                            cont_rango1 += 1
+                        elif((edad >= 18) and (edad < 30)):
+                            cont_rango2 += 1
+                        elif((edad >= 30) and (edad < 60)):
+                            cont_rango3 += 1
+                        elif(edad >= 60):
+                            cont_rango4 += 1
+
+    if((cont_manu == limit) and (cont_juanjo == limit)):
+        print("Manuel y Juanjo reconocidos, cambiando fuente a HDMI 1...")
+        #STV.set_hdmi_source(1)
+        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
+        time.sleep(refresh_time)
+    elif(cont_manu == limit):
         print("Manuel reconocido, abriendo Netflix...")
         #STV.set_app("netflix")
-        cont_manu = 0
-        cont_juanjo = 0
-        cont_joven = 0
-        cont_adulto = 0
+        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
         time.sleep(refresh_time)
     elif(cont_juanjo == limit):
         print("Juanjo reconocido, abriendo Spotify...")
         #STV.set_app("spotify")
-        cont_manu = 0
-        cont_juanjo = 0
-        cont_joven = 0
-        cont_adulto = 0
+        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
         time.sleep(refresh_time)
-    elif(cont_joven == limit):
-        print("Persona joven reconocida, abriendo Youtube...")
-        #STV.set_app("youtube")
-        cont_manu = 0
-        cont_juanjo = 0
-        cont_joven = 0
-        cont_adulto = 0
+    elif(cont_rango1 == limit):
+        print("Persona del rango de edad 1 detectada, abriendo Clan TV...")
+        #STV.set_app("clantv")
+        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
         time.sleep(refresh_time)
-    elif(cont_adulto == limit):
-        print("Persona adulta reconocida, abriendo Amazon Prime Video...")
+    elif(cont_rango2 == limit):
+        print("Persona del rango de edad 2 detectada, abriendo 'APP DEPORTIVA'...")
+        #STV.set_app("")
+        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
+        time.sleep(refresh_time)
+    elif(cont_rango3 == limit):
+        print("Persona del rango de edad 3 detectada, abriendo Amazon Prime Video...")
         #STV.set_app("prime-video")
-        cont_manu = 0
-        cont_juanjo = 0
-        cont_joven = 0
-        cont_adulto = 0
+        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
+        time.sleep(refresh_time)
+    elif(cont_rango4 == limit):
+        print("Persona del rango de edad 4 detectada, abriendo Meteonews TV...")
+        #STV.set_app("meteonews")
+        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
+        time.sleep(refresh_time)
+    elif(len(detected_faces) >= 3):
+        print("Grupo de numeroso personas detectado, abriendo modo fiesta...")
+        #STV.set_app("party")
+        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
         time.sleep(refresh_time)
 
