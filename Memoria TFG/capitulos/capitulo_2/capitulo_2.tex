@@ -1,0 +1,67 @@
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 2
+%----------------------------------------------------------------------------------------
+
+\chapter{Segundo capítulo.}
+\label{chapter_2}
+
+\section{Sección 1. Figuras}
+
+\lipsum[1-2] Ver Figura \ref{img_ejemplo}. 
+\begin{figure}[htb]
+	\centering\includegraphics{example-image-a}
+	\caption{Ejemplo de Figura.}
+	\label{img_ejemplo}
+\end{figure}
+
+\section{Sección 2. Ecuaciones}
+
+La ecuación \ref{eq:ej1} y \ref{eq:ej2} son ejemplos de ecuaciones con Latex. Esto es una ecuación en linea $a = b-1$.
+
+\begin{equation}\label{eq:ej1}
+y = \underbrace{f(1)}_{P\ 1} + \overbrace{f(5)}^{parte\ 2}
+\end{equation}
+
+\begin{equation}\label{eq:ej2}
+y(x_{i}) = \sin(x_{i})^{2}
+\end{equation}
+
+\section{Sección 3. Tablas}
+Ejemplos de \url{https://www.overleaf.com/learn/latex/Tables}.
+
+\begin{center}
+	\begin{tabular}{ c c c }
+		cell1 & cell2 & cell3 \\ 
+		cell4 & cell5 & cell6 \\  
+		cell7 & cell8 & cell9    
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{ |c|c|c| } 
+		\hline
+		cell1 & cell2 & cell3 \\ 
+		cell4 & cell5 & cell6 \\ 
+		cell7 & cell8 & cell9 \\ 
+		\hline
+	\end{tabular}
+\end{center}
+
+
+
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+	\hline
+	\multicolumn{4}{|c|}{Country List} \\
+	\hline
+	Country Name     or Area Name& ISO ALPHA 2 Code &ISO ALPHA 3 Code&ISO numeric Code\\
+	\hline
+	Afghanistan   & AF    &AFG&   004\\
+	Aland Islands&   AX  & ALA   &248\\
+	Albania &AL & ALB&  008\\
+	Algeria    &DZ & DZA&  012\\
+	American Samoa&   AS  & ASM&016\\
+	Andorra& AD  & AND   &020\\
+	Angola& AO  & AGO&024\\
+	\hline
+\end{tabular}

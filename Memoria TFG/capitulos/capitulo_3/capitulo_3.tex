@@ -1,0 +1,78 @@
+
+%----------------------------------------------------------------------------------------
+%	CHAPTER 3
+%----------------------------------------------------------------------------------------
+
+
+\chapterimage{dibujo} % Chapter heading image
+
+\chapter{Capítulo 3 }\label{chapter_3}
+\section{Seccion 1}
+\subsection{Figura posicionada en lateral}
+\pichskip{2em}
+\parpic[r][t]{%
+	\begin{minipage}{40mm}
+		\includegraphics[width=\linewidth]{example-image-a}%
+	\end{minipage}
+}
+\subsubsection{Subsección 1}
+\lipsum[1]
+
+\parpic[r][t]{%
+	\begin{minipage}{40mm}
+		\includegraphics[width=\linewidth]{example-image-b}%
+	\end{minipage}
+}
+{ \subsubsection{Subseccion 2}}
+
+\lipsum[1]
+
+\begin{minipage}{\textwidth}
+\lstinputlisting[language=C,label=example-CodeC, caption={Fragmento del codigo desde archivo.}]{codigoFuente/code.c}
+\end{minipage}
+
+\begin{minipage}{\textwidth}
+\begin{lstlisting}[language=C,label=example_Code, caption={Fragmento del codigo pegado directamente.}]
+#include <stdio.h>
+#define N 10
+/* Comentario en un
+* bloque*/
+
+int main()
+{
+	int i;
+
+	// Line comment.	
+	puts("¡Hola Mundo!");
+
+	for (i = 0; i < N; i++)
+	{
+		puts("¡LaTeX también es genial para los programadores!");
+	}
+	
+return 0;
+}
+\end{lstlisting}
+\end{minipage}
+
+\subsubsection{Figuras en paralelo}
+
+
+\begin{figure}[!htb]
+	\centering
+	\begin{minipage}{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{example-image-c}
+		\caption{Figura c.}
+		\label{img_figc}
+	\end{minipage}
+	~
+	\begin{minipage}{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{example-image-a}
+		\caption{Figura a.}
+		\label{img_figd}
+	\end{minipage}
+	
+\end{figure}
+
