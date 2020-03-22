@@ -165,7 +165,8 @@
 %----------------------------------------------------------------------------------------
 
 \usepackage{fancyhdr} % Required for header and footer configuration
-\newcommand{\nombreTFG}{\sffamily\normalsize\bfseries Nombre del TFG}
+\newcommand{\gradoInf}{\sffamily\scriptsize\bfseries Grado en Ingenier\'ia Inform\'atica}
+\newcommand{\nombreAutor}{\sffamily\scriptsize\bfseries Manuel Mar\'in Peral}
 \newcommand{\numeroPagina}{\sffamily\normalsize\bfseries \thepage}
 % Set odd and even pages header
 \lhead[]{}
@@ -174,9 +175,9 @@
 \renewcommand{\headrulewidth}{0pt}
 
 % Set odd and even pages footer
-\lfoot[\numeroPagina]{\nombreTFG}
+\lfoot[\numeroPagina]{\nombreAutor}
 \cfoot[]{}
-\rfoot[\nombreTFG]{\numeroPagina}
+\rfoot[\gradoInf]{\numeroPagina}
 \renewcommand{\footrulewidth}{0.5pt}
 
 % Set odd and even first chapter page
@@ -184,9 +185,12 @@
 	\fancyhead[L]{}
 	\fancyhead[C]{}
 	\fancyhead[R]{}
-	\fancyfoot[L]{\nombreTFG}
-	\fancyfoot[C]{}
-	\fancyfoot[R]{\numeroPagina}
+	\fancyfoot[LE]{\nombreAutor}
+	\fancyfoot[CE]{}
+	\fancyfoot[RE]{\numeroPagina}
+	\fancyfoot[LO]{\numeroPagina}
+	\fancyfoot[CO]{}
+	\fancyfoot[RO]{\gradoInf}
 	\renewcommand{\headrulewidth}{0pt}
 	\renewcommand{\footrulewidth}{0.5pt}
 }
