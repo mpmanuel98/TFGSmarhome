@@ -4,24 +4,24 @@ import os
 #Funcion para preparar las listas de personas y etiquetas para el entrenamiento
 def create_training_structures(samples_path):
 
-    #Se hace un listado de los directorios que hay en la ruta 'samples_path'
+    #Se hace un listado de los directorios que hay en la ruta "samples_path"
     directories = os.listdir(samples_path)
 
     #Creacion de las estructuras para el posterior entrenamiento
     faces = []
     labels = []
 
-    #Recorremos cada uno de los directorios que se encuentran en la ruta 'samples_path'
+    #Recorremos cada uno de los directorios que se encuentran en la ruta "samples_path"
     for dir_name in directories:
 
-        #Los directorios validos para el entrenamiento tienen el prefijo 'Persona_'
+        #Los directorios validos para el entrenamiento tienen el prefijo "Persona_"
         if dir_name.startswith("Persona_"):
 
             #Obtenemos la etiqueta del nombre del directorio que contiene la persona
-            #Formato del nombre del directorio => Persona_'etiqueta'
+            #Formato del nombre del directorio => Persona_"etiqueta"
             label = int(dir_name.replace("Persona_", ""))
 
-            #Creamos la ruta del directorio que contiene a una persona concatenando el directorio raiz 'samples_path' con el nombre del directorio de una persona
+            #Creamos la ruta del directorio que contiene a una persona concatenando el directorio raiz "samples_path" con el nombre del directorio de una persona
             subject_dir_path = samples_path + "/" + dir_name
 
             #Obtenemos la lista de imagenes de caras de una persona de su directorio
@@ -54,7 +54,7 @@ def create_training_structures(samples_path):
 
     return faces, labels
 
-#Funcion para detectar caras en la imagen 'img'
+#Funcion para detectar caras en la imagen "img"
 def detect_face(img):
 
     #Pasamos la imagen a escala de grises, esto es necesario para realizar el procesamiento

@@ -1,5 +1,6 @@
-import requests
 import json
+
+import requests
 
 #URL structure: http://[Base URL]/[service name]
 #[Base URL]: [IP]/sony

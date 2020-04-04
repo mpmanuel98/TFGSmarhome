@@ -1,39 +1,22 @@
+import io
+import os
+import time
+import xml.etree.ElementTree as ET
+
+import cv2
+import face_recognition as FR
+import numpy as np
+import requests
+from PIL import Image
+
 import modules.azure_faceapi as AFA
 import modules.foscam_webcams as FWC
-import modules.spacelynk_server as SS
-import modules.sony_tv as ST
-import face_recognition as FR
-import requests
-import xml.etree.ElementTree as ET
-import io
-import time
-from PIL import Image
-import cv2
-import numpy as np
-import os
-
-##########################################
-################## URLs ##################
-##########################################
-
-# URL de acceso a la camara del salon
-url_salon = "http://192.168.7.225:8894/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara del distribuidor
-url_distribuidor = "http://192.168.7.224:8893/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara de la cocina
-url_cocina = "http://192.168.7.223:8892/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara del dormitorio
-url_dormitorio = "http://192.168.7.222:8891/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara en mi casa
-url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
+import modules.sony_tv as STV
+import modules.spacelynk_server as SPL
 
 #Listado de las imagenes inicialmente guardadas
-subject1_images = os.listdir("imagenes-entrenamiento/Persona_1")
-subject2_images = os.listdir("imagenes-entrenamiento/Persona_2")
+subject1_images = os.listdir("training-images/Person_1")
+subject2_images = os.listdir("training-images/Person_2")
 
 #Conteo del numero de imagenes inicialmente guardadas
 subject1_counter = len(subject1_images)
@@ -46,46 +29,50 @@ limit = 10
 while(not ((subject1_counter == limit) and (subject2_counter == limit))):
 
     print("Tomando imagen de muestra...")
-    img = FWC.take_snap(url_pruebas_casa)
+    img = FWC.take_snap(FWC.url_pruebas_casa)
     #data = open("imagenes/Manu/Tests/imagenTest3.jpg", 'rb').read()
 
-    detected_faces = AFA.detectFace(img, "detection_01", "recognition_02")
+    detected_faces = AFA.detect_face(img, "detection_01", "recognition_02")
 
     for face_info in detected_faces:
         id_cara = [face_info["idFace"]]
-        identified_face = AFA.identifyFace(id_cara, "id1")
+        identified_face = AFA.identify_face(id_cara, "id1")
         for face in identified_face:
-            if(float(face[1]) > 0.8):
-                person_info = AFA.getPGPerson("id1", face[0])
-                if(person_info[0] == "Manuel Marin Peral" and subject1_counter < limit):
+            if(float(face.get('confidence')) > 0.8):
+                person_info = AFA.get_PGPerson("id1", face.get('idPerson'))
+                if(person_info.get("name") == "Manuel Marin Peral" and subject1_counter < limit):
                     #Valores de referencia se pueden ajustar en funcion de la calidad de imagen de la camara
                     if((float(face_info.get("blur")) < 1) and (float(face_info.get("noise")) < 1)):
                         top = face_info["faceRectangle"].get("top")
                         left = face_info["faceRectangle"].get("left")
                         width = face_info["faceRectangle"].get("width")
                         height = face_info["faceRectangle"].get("height")
+
                         pil_image = Image.open(io.BytesIO(img))
                         pil_image = pil_image.crop((left, top, left+width, top+height))
-                        print("Guardando imagen de cara valida para:", person_info[0])
-                        pil_image.save("imagenes-entrenamiento/Persona_1/imagenCapturada" + str(subject1_counter + 1) + ".png")
 
-                if(person_info[0] == "Juan Jose Escarabajal Hinojo" and subject2_counter < limit):
+                        print("Guardando imagen de cara valida para:", person_info.get("name"))
+                        pil_image.save("training-images/Person_1/imagenCapturada" + str(subject1_counter + 1) + ".png")
+
+                if(person_info.get("name") == "Juan Jose Escarabajal Hinojo" and subject2_counter < limit):
                     #Valores de referencia se pueden ajustar en funcion de la calidad de imagen de la camara
                     if((float(face_info.get("blur")) < 1) and (float(face_info.get("noise")) < 1)):
                         top = face_info["faceRectangle"].get("top")
                         left = face_info["faceRectangle"].get("left")
                         width = face_info["faceRectangle"].get("width")
                         height = face_info["faceRectangle"].get("height")
+
                         pil_image = Image.open(io.BytesIO(img))
-                        pil_image = pil_image.crop((left, top, left+width, top+height)) 
-                        print("Guardando imagen de cara valida para:", person_info[0])
-                        pil_image.save("imagenes-entrenamiento/Persona_2/imagenCapturada" + str(subject2_counter + 1) + ".png")
+                        pil_image = pil_image.crop((left, top, left+width, top+height))
+
+                        print("Guardando imagen de cara valida para:", person_info.get("name"))
+                        pil_image.save("training-images/Person_2/imagenCapturada" + str(subject2_counter + 1) + ".png")
     
     #Actualizando contadores
-    subject1_images = os.listdir("imagenes-entrenamiento/Persona_1")
+    subject1_images = os.listdir("training-images/Person_1")
     subject1_counter = len(subject1_images)
-    subject2_images = os.listdir("imagenes-entrenamiento/Persona_2")
+
+    subject2_images = os.listdir("training-images/Person_2")
     subject2_counter = len(subject2_images)
 
 print("Finalizado el proceso de obtencion de imagenes de caras automatizado.")
-

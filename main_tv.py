@@ -1,13 +1,15 @@
-import modules.azure_faceapi as AFA
-import modules.foscam_webcams as FWC
-import modules.spacelynk_server as SPS
-import modules.sony_tv as STV
-import recognition_opencv as ROCV
+import io
 import time
+
 import cv2
 import numpy as np
 from PIL import Image
-import io
+
+import modules.azure_faceapi as AFA
+import modules.foscam_webcams as FWC
+import modules.sony_tv as STV
+import modules.spacelynk_server as SPL
+import recognition_opencv as RCV
 
 ##########################################
 ################## URLs ##################
@@ -40,7 +42,7 @@ print("Comenzando pre-procesamiento...")
 nombre_personas = ["", "Manuel", "Juanjo"]
 
 #Obtenemos las listas necesarias para el entrenamiento
-faces, labels = ROCV.create_training_structures("imagenes-entrenamiento")
+faces, labels = RCV.create_training_structures("imagenes-entrenamiento")
 
 #Mostramos el total de caras y etiquetas obtenido (debe ser el mismo, una etiqueta por cara)
 print("Caras totales para el reconocimiento: ", len(faces))
@@ -81,7 +83,7 @@ while True:
     image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
 
     #Se realiza un reconocimiento de la imagen
-    people = ROCV.predict(image, recognizer, nombre_personas)
+    people = RCV.predict(image, recognizer, nombre_personas)
 
     #Si no se detectan caras, se hacen acciones generales. En caso de exito, se realizan acciones personalizadas en funcion de la persona detectada/reconocida
     if people is None:
@@ -154,4 +156,3 @@ while True:
         #STV.set_app("party")
         cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
         time.sleep(refresh_time)
-

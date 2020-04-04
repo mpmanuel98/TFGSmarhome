@@ -1,41 +1,73 @@
-import requests
+"""
+Module azure_faceapi.py.
+
+In this module there are some definitions ir order to send requests to
+the Azure Face API cloud service. With that, the user will be able to
+create person groups, insert people (previously created) in these
+person groups and add faces to each person. After that some tasks like
+face detection or face identification can be performed.
+
+"""
 import json
 
-clave_suscripcion1 = "bbd185d3018149b7bbd5fb2d9e6e937f"
-clave_suscripcion2 = "4f002c71a79f46da988bc2ce2105224e"
+import requests
+
+"""
+Attributes
+----------
+"""
+subscription_key1 = "bbd185d3018149b7bbd5fb2d9e6e937f"
+subscription_key2 = "4f002c71a79f46da988bc2ce2105224e"
+
 endpoint = "https://faceiasmarthome.cognitiveservices.azure.com"
-
-faceia_url_persongroups = '/face/v1.0/persongroups/'
-faceia_url_detect = '/face/v1.0/detect/'
-faceia_url_identify = '/face/v1.0/identify/'
+faceia_url_persongroups = "/face/v1.0/persongroups/"
+faceia_url_detect = "/face/v1.0/detect/"
+faceia_url_identify = "/face/v1.0/identify/"
 
 """
-DETECT FACE
-
-In:     Imagen en la que se quiere detectar caras.
-        Modelo de deteccion (detection_01 | detection_02)
-        Modelo de reconocimiento (recognition_01 | recognition_02)
-Out:    Array con los IDs de las caras detectadas.
+Definitions (functions)
+----------
 """
-def detectFace(img, detectionModel, recognitionModel):
+
+def detect_face(img, detection_model, recognition_model):
+    """Detects faces in a given image.
+
+    Parameters
+    ----------
+    img : Jpeg image data
+        The data of the image.
+    detection_model : string
+        The "detectionModel" associated with the detected faceIds
+        ("detection_01" or "detection_02").
+    recognition_model : string
+        The "recognitionModel" associated with the detected faceIds
+        ("recognition_01" or "recognition_02").
+
+    Returns
+    -------
+    list
+        A list of dictionaries. Each dictionary contains the information
+        of a detected face.
+        {idFace, faceRectangle, age, blur, noise, exposure}
+    """
+
     headers = {
-        'Content-Type': 'application/octet-stream',
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1}
+        "Content-Type": "application/octet-stream",
+        "Ocp-Apim-Subscription-Key": subscription_key1}
 
     params = {
-        'returnFaceId': 'true',
-        'detectionModel': detectionModel,
-        'recognitionModel': recognitionModel,
-        'returnFaceAttributes': 'age,blur,exposure,noise'
+        "returnFaceId": "true",
+        "detectionModel": detection_model,
+        "recognitionModel": recognition_model,
+        "returnFaceAttributes": "age,blur,exposure,noise"
     }
 
-    urlreq = endpoint + faceia_url_detect
-
-    response = requests.post(url=urlreq, headers=headers, params=params, data=img)
-    responseJson = response.json()
+    url_req = endpoint + faceia_url_detect
+    response = requests.post(url=url_req, headers=headers, params=params, data=img)
+    response_json = response.json()
     
     faces_detected = []
-    for face in responseJson:
+    for face in response_json:
         face_item = dict()
         face_item["idFace"] = face.get("faceId")
         face_item["faceRectangle"] = face.get("faceRectangle")
@@ -48,95 +80,130 @@ def detectFace(img, detectionModel, recognitionModel):
 
     return faces_detected
 
-"""
-IDENTIFY FACE
+def identify_face(id_faces, id_group):
+    """Indentifies faces in a detected faces list.
 
-In:     Array de IDs de caras detectadas en el metodo 'detectFace'
-        ID del grupo de personas en el que se quiere identificar.
-Out:    Array con la persona reconocida y el coeficiente de confiabilidad para cada cara detectada en el metodo 'detect'
-"""
-def identifyFace(arrayIdCaras, idGrupo):
+    Parameters
+    ----------
+    id_faces : list
+        List of detected faces ids.
+    id_group : string
+        Group where the identification will be executed.
+
+    Returns
+    -------
+    list
+        A list of dictionaries. Each dictionary contains the information
+        of an identified face.
+        {idPerson, confidence}
+    """
+
     headers = {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Content-Type": "application/json",
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
     body = {
-        'faceIds': arrayIdCaras,
-        'personGroupId': idGrupo
+        "faceIds": id_faces,
+        "personGroupId": id_group
     }
     body = str(body)
 
-    urlreq = endpoint + faceia_url_identify
+    url_req = endpoint + faceia_url_identify
+    response = requests.post(url=url_req, headers=headers, data=body)
+    response_json = response.json()
 
-    response = requests.post(url=urlreq, headers=headers, data=body)
-    responseJson = response.json()
+    identified_faces = []
+    for detected_face in response_json:
+        for candidates in detected_face.get("candidates"):
+            face_data = dict()
+            face_data["idPerson"] = candidates.get("personId")
+            face_data["confidence"] = candidates.get("confidence")
 
-    identifiedFaces = []
-    for detectedFace in responseJson:
-        for candidates in detectedFace.get('candidates'):
-            faceData = []
-            faceData.append(candidates.get('personId'))
-            faceData.append(candidates.get('confidence'))
-            identifiedFaces.append(faceData)
+            identified_faces.append(face_data)
     
-    return identifiedFaces
+    return identified_faces
 
-"""
-IDENTIFY PROCESS
+def identify_process(img, id_group, detection_model, recognition_model):
+    """Indentifies faces in a given image.
 
-In:     Imagen en la que se quiere indentificar caras.
-        ID del grupo de personas en el que se quiere identificar.
-        Modelo de deteccion (detection_01 | detection_02)
-        Modelo de reconocimiento (recognition_01 | recognition_02)
-Out:    Array con los datos completos de las personas indentificadas en la imagen de entrada.
-"""
-def identifyProcess(img, idGrupo, detectionModel, recognitionModel):
-    detected_faces = detectFace(img, detectionModel, recognitionModel)
+    Parameters
+    ----------
+    img : Jpeg image data
+        The data of the image.
+    id_group : string
+        Group where the identification will be executed.
+    detection_model : string
+        The "detectionModel" associated with the detected faceIds
+        ("detection_01" or "detection_02").
+    recognition_model : string
+        The "recognitionModel" associated with the detected faceIds
+        ("recognition_01" or "recognition_02").
+
+    Returns
+    -------
+    list
+        A list of dictionaries. Each dictionary contains the information
+        of an identified face.
+        {idPerson, name, data, confidence}
+    """
+
+    detected_faces = detect_face(img, detection_model, recognition_model)
     face_list = []
-    print(detected_faces)
     for face in detected_faces:
         face_list.append(face.get("idFace"))
 
-    identifiedPeople = identifyFace(face_list, idGrupo)
+    identified_people = identify_face(face_list, id_group)
 
     people = []
-    for faces in identifiedPeople:
-        person = []
-        nombre, datos = getPGPerson(idGrupo, faces[0])
-        person.append(faces[0])
-        person.append(nombre)
-        person.append(datos)
-        person.append(faces[1])
+    for faces in identified_people:
+        person = dict()
+        id_person = faces.get("idPerson")
+        name, data = get_PGPerson(id_group, id_person)
+        person["idPerson"] = id_person
+        person["name"] = name
+        person["data"] = data
+        person["confidence"] = faces.get("confidence")
+
         people.append(person)
 
     return people
 
-"""
-DETECT HUMAN PRESENCE
+def detect_presence(img, detection_model, recognition_model):
+    """Detects if there is a person in the given image.
 
-In:     Imagen en la que se quiere detectar caras.
-        Modelo de deteccion (detection_01 | detection_02)
-        Modelo de reconocimiento (recognition_01 | recognition_02)
-Out:    True -> Presencia humana detectada.
-        False -> Presencia humana no detectada.
-"""
-def detectPresence(img, detectionModel, recognitionModel):
+    Parameters
+    ----------
+    img : Jpeg image data
+        The data of the image.
+    detection_model : string
+        The "detectionModel" associated with the detected faceIds
+        ("detection_01" or "detection_02").
+    recognition_model : string
+        The "recognitionModel" associated with the detected faceIds
+        ("recognition_01" or "recognition_02").
+
+    Returns
+    -------
+    bool
+        True: if there is human presence.
+        False: otherwise.
+    """
+
     headers = {
-        'Content-Type': 'application/octet-stream',
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1}
+        "Content-Type": "application/octet-stream",
+        "Ocp-Apim-Subscription-Key": subscription_key1}
 
     params = {
-        'returnFaceId': 'true',
-        'detectionModel': detectionModel,
-        'returnFaceLandmarks': 'true',
-        'returnFaceAttributes': 'age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise',
-        'recognitionModel': recognitionModel
+        "returnFaceId": "true",
+        "detectionModel": detection_model,
+        "recognitionModel": recognition_model,
+        "returnFaceLandmarks": "true",
+        "returnFaceAttributes": "age,blur,exposure,noise"
     }
 
-    urlreq = endpoint + faceia_url_detect
-
-    response = requests.post(url=urlreq, headers=headers, params=params, data=img)
+    url_req = endpoint + faceia_url_detect
+    response = requests.post(url=url_req, headers=headers, params=params, data=img)
 
     if(response.text == "[]"):
         return False
@@ -145,220 +212,404 @@ def detectPresence(img, detectionModel, recognitionModel):
 
 # PERSON GROUP
 
-def createPersonGroup(idGrupo, nombre, datos, modelo):
+def create_person_group(id_group, name, data, recognition_model):
+    """Create a new person group.
+
+    Parameters
+    ----------
+    id_group : string
+        User-provided id of the group to create.
+    name : string
+        Person group display name.
+    data : string
+        User-provided data attached to the person group.
+    recognition_model : string
+        The "recognitionModel" associated with this person group
+        ("recognition_01" or "recognition_02").
+
+    Returns
+    -------
+    int
+        Response status code (200 = Success).
+    """
+    
     headers = {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Content-Type": "application/json",
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
     body = {
-        "name": nombre,
-        "userData": datos,
-        "recognitionModel": modelo
+        "name": name,
+        "userData": data,
+        "recognitionModel": recognition_model
     }
     body = str(body)
 
-    urlreq = endpoint + faceia_url_persongroups + idGrupo
+    url_req = endpoint + faceia_url_persongroups + id_group
+    response = requests.put(url=url_req, headers=headers, data=body)
+    
+    return response.status_code
 
-    response = requests.put(url=urlreq, headers=headers, data=body)
-    print(response.text)
+def delete_person_group(id_group):
+    """Delete a person group.
 
+    Parameters
+    ----------
+    id_group : string
+        User-provided id of the group to delete.
 
-def deletePersonGroup(idGrupo):
+    Returns
+    -------
+    int
+        Response status code (200 = Success).
+    """
+
     headers = {
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
-    urlreq = endpoint + faceia_url_persongroups + idGrupo
+    url_req = endpoint + faceia_url_persongroups + id_group
+    response = requests.delete(url=url_req, headers=headers)
 
-    response = requests.delete(url=urlreq, headers=headers)
-    print(response.text)
+    return response.status_code
 
-def getPersonGroup(idGrupo, get_modelo):
+def get_person_group(id_group, get_model):
+    """Gets all the information about a specific person group.
+
+    Parameters
+    ----------
+    id_group : string
+        User-provided id of the group to delete.
+    get_model : bool
+        Determines whether the group recognition model is
+        obtained or not.
+
+    Returns
+    -------
+    dict
+        Dictionary with the information about the person group.
+        {idPersonGroup, name, userData, recognitionModel}
+    """
+
     headers = {
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
     params = {
-        "returnRecognitionModel": get_modelo
+        "returnRecognitionModel": get_model
     }
 
-    urlreq = endpoint + faceia_url_persongroups + idGrupo
+    url_req = endpoint + faceia_url_persongroups + id_group
+    response = requests.get(url=url_req, headers=headers, params=params)
+    response_json = response.json()
 
-    response = requests.get(url=urlreq, headers=headers, params=params)
-    print(response.text)
+    info_person_group = dict()
+    info_person_group["idPersonGroup"] = response_json.get("personGroupId")
+    info_person_group["name"] = response_json.get("name")
+    info_person_group["userData"] = response_json.get("userData")
+    info_person_group["recognitionModel"] = response_json.get("recognitionModel")
 
-def listPersonGroup():
+    return info_person_group
+
+def list_person_group():
+    """Lists all the existing person groups.
+
+    Returns
+    -------
+    list
+        A list of dictionaries. Each dictionary contains the information
+        of an existing person group.
+        {personGroupId, name, userData}
+    """
+
     headers = {
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
-    urlreq = endpoint + faceia_url_persongroups
+    url_req = endpoint + faceia_url_persongroups
+    response = requests.get(url=url_req, headers=headers)
+    response_json = response.json()
 
-    response = requests.get(url=urlreq, headers=headers)
-    print(response.text)
+    person_group_list = []
+    for person_group in response_json:
+        person_group_list.append(person_group)
 
-def trainPersonGroup(idGrupo):
+    return person_group_list
+
+def train_person_group(id_group):
+    """Trains the specified person group.
+
+    Parameters
+    ----------
+    id_group : string
+        User-provided id of the person group to train.
+
+    Returns
+    -------
+    int
+        Response status code (202 = Success).
+    """
+
     headers = {
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
-    urlreq = endpoint + faceia_url_persongroups + idGrupo + "/train"
+    url_req = endpoint + faceia_url_persongroups + id_group + "/train"
+    response = requests.post(url=url_req, headers=headers)
+    
+    return response.status_code
 
-    response = requests.post(url=urlreq, headers=headers)
-    print(response.text)
+def get_training_status(id_group):
+    """Gets the training status of the person group.
 
-def getTrainingStatus(idGrupo):
+    Parameters
+    ----------
+    id_group : string
+        User-provided id of the person group to
+        obtain the training status.
+
+    Returns
+    -------
+    dict
+        Dictionary with information about the training status.
+        {status, createdDateTime, lastActionDateTime, message,
+        lastSuccessfulTrainingId, lastSuccessfulTrainingDateTime}
+    """
+
     headers = {
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
     params = {
         "returnRecognitionModel"
     }
 
-    urlreq = endpoint + faceia_url_persongroups + idGrupo + "/training"
+    url_req = endpoint + faceia_url_persongroups + id_group + "/training"
+    response = requests.get(url=url_req, headers=headers)
+    response_json = response.json()
 
-    response = requests.get(url=urlreq, headers=headers)
-    print(response.text)
+    info_training_status = dict()
+    info_training_status["status"] = response_json["status"]
+    info_training_status["createdDateTime"] = response_json["createdDateTime"]
+    info_training_status["lastActionDateTime"] = response_json["lastActionDateTime"]
+    info_training_status["message"] = response_json["message"]
+    info_training_status["lastSuccessfulTrainingId"] = response_json["lastSuccessfulTrainingId"]
+    info_training_status["lastSuccessfulTrainingDateTime"] = response_json["lastSuccessfulTrainingDateTime"]
+
+    return info_training_status
 
 # PERSON GROUP PERSON
 
-def createPGPerson(idGrupoDest, nombre, datos):
+def create_PGPerson(id_group_dest, name, data):
+    """Creates a person in a person group.
+
+    Parameters
+    ----------
+    id_group_dest : string
+        Specifying the target person group to create the person.
+    name : string
+        Display name of the target person.
+    data : string
+        User-provided data attached to a person.
+
+    Returns
+    -------
+    int
+        Response status code (200 = Success).
+    """
+
     headers = {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Content-Type": "application/json",
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
-
     body = {
-        "name": nombre,
-        "userData": datos
+        "name": name,
+        "userData": data
     }
     body = str(body)
 
-    urlreq = endpoint + faceia_url_persongroups + idGrupoDest + "/persons"
+    url_req = endpoint + faceia_url_persongroups + id_group_dest + "/persons"
+    response = requests.post(url=url_req, headers=headers, data=body)
 
-    response = requests.post(url=urlreq, headers=headers, data=body)
-    print(response.text)
+    return response.status_code
 
-def addFacePGPerson(idGrupo, idPersona, urlImg, data):
+def add_face_PGPerson(id_group, id_person, dir_img, data):
+    """Add a face to a person into a person group.
+
+    Parameters
+    ----------
+    id_group : string
+        Specifying the person group containing the target person.
+    id_person : string
+        Target person id that the face is added to.
+    dir_img : string
+        Directory where the face image is stored.
+    data : string
+        User-specified data about the target face
+
+    Returns
+    -------
+    int
+        Response status code (200 = Success).
+    """
+
     headers = {
-        'Content-Type': 'application/octet-stream',
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Content-Type": "application/octet-stream",
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
     params = {
         "userData": data
     }
 
-    body = open(urlImg, 'rb').read()
+    body = open(dir_img, "rb").read()
 
-    urlreq = endpoint + faceia_url_persongroups + idGrupo + "/persons/" + idPersona + "/persistedFaces"
+    url_req = endpoint + faceia_url_persongroups + id_group + "/persons/" + id_person + "/persistedFaces"
+    response = requests.post(url=url_req, headers=headers, data=body, params=params)
+    
+    return response.status_code
 
-    response = requests.post(url=urlreq, headers=headers, data=body, params=params)
-    print(response.text)
+def delete_PGPerson(id_group, id_person):
+    """Delete an existing person from a person group.
 
-def deletePGPerson(idGrupo, idPersona):
+    Parameters
+    ----------
+    id_group : string
+        Specifying the person group containing the person to delete.
+    id_person : string
+        The target person id to delete.
+
+    Returns
+    -------
+    int
+        Response status code (200 = Success).
+    """
+
     headers = {
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
-    urlreq = endpoint + faceia_url_persongroups + idGrupo + "/persons/" + idPersona
+    url_req = endpoint + faceia_url_persongroups + id_group + "/persons/" + id_person
+    response = requests.delete(url=url_req, headers=headers)
 
-    response = requests.delete(url=urlreq, headers=headers)
-    print(response.text)
+    return response.status_code
 
-def deleteFacePGPerson(idGrupo, idPersona, idPersistedFace):
+def delete_face_PGPerson(id_group, id_person, id_persisted_face):
+    """Delete a face from a person in a person group.
+
+    Parameters
+    ----------
+    id_group : string
+        Specifying the person group containing the target person.
+    id_person : string
+        Specifying the person that the target persisted face belong to.
+    id_persisted_face : string
+        Specifying the persisted face to remove. 
+
+    Returns
+    -------
+    int
+        Response status code (200 = Success).
+    """
+
     headers = {
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
-    urlreq = endpoint + faceia_url_persongroups + idGrupo + "/persons/" + idPersona + "/persistedFaces/" + idPersistedFace
+    url_req = endpoint + faceia_url_persongroups + id_group + "/persons/" + id_person + "/persistedFaces/" + id_persisted_face
+    response = requests.delete(url=url_req, headers=headers)
 
-    response = requests.delete(url=urlreq, headers=headers)
-    print(response.text)
+    return response.status_code
 
-def getPGPerson(idGrupo, idPersona):
+def get_PGPerson(id_group, id_person):
+    """Gets the information about a specified person
+    in a specified person group.
+
+    Parameters
+    ----------
+    id_group : string
+        Specifying the person group containing the target person.
+    id_person : string
+        Specifying the target person.
+
+    Returns
+    -------
+    dict
+        Dictionary with information about the person
+        in the person group.
+        {name, data, persistedFaceIds}
+    """
+
     headers = {
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
-    urlreq = endpoint + faceia_url_persongroups + idGrupo + "/persons/" + idPersona
+    url_req = endpoint + faceia_url_persongroups + id_group + "/persons/" + id_person
+    response = requests.get(url=url_req, headers=headers)
+    response_json = response.json()
 
-    response = requests.get(url=urlreq, headers=headers)
+    person_info = dict()
+    person_info["name"] = response_json["name"]
+    person_info["data"] = response_json["userData"]
+    person_info["persistedFaceIds"] = response_json["persistedFaceIds"]
 
-    responseJson = response.json()
-    name = responseJson["name"]
-    personData = responseJson["userData"]
+    return person_info
 
-    return str(name), str(personData)
+def get_face_PGPerson(id_group, id_person, id_persisted_face):
+    """Gets person face information.
 
-def getFacePGPerson(idGrupo, idPersona, idPersistedFace):
+    Parameters
+    ----------
+    id_group : string
+        Specifying the person group containing the target person.
+    id_person : string
+        Specifying the target person that the face belongs to.
+    id_persisted_face : string
+        The id of the target persisted face of the person.
+
+    Returns
+    -------
+    string
+        Data associated to the face specified.
+    """
+
     headers = {
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
-    urlreq = endpoint + faceia_url_persongroups + idGrupo + "/persons/" + idPersona + "/persistedFaces/" + idPersistedFace
+    url_req = endpoint + faceia_url_persongroups + id_group + "/persons/" + id_person + "/persistedFaces/" + id_persisted_face
+    response = requests.get(url=url_req, headers=headers)
+    response_json = response.json()
 
-    response = requests.get(url=urlreq, headers=headers)
-    print(response.text)
+    return response_json["userData"]
 
-def listPGPerson(idGrupo):
+def list_PGPerson(id_group):
+    """Lists all the people information in the specified person group.
+
+    Parameters
+    ----------
+    id_group : string
+        id of the target person group.
+
+    Returns
+    -------
+    list
+        A list of dictionaries. Each dictionary contains the information
+        of each person in the speficied person group.
+        {personId, persistedFaceIds (list), name, userData}
+    """
+
     headers = {
-        'Ocp-Apim-Subscription-Key': clave_suscripcion1
+        "Ocp-Apim-Subscription-Key": subscription_key1
     }
 
-    urlreq = endpoint + faceia_url_persongroups + idGrupo + "/persons"
+    url_req = endpoint + faceia_url_persongroups + id_group + "/persons"
+    response = requests.get(url=url_req, headers=headers)
+    response_json = response.json()
 
-    response = requests.get(url=urlreq, headers=headers)
-    print(response.text)
+    person_info = []
+    for person in response_json:
+        person_info.append(person)
 
-
-# TESTING
-
-# IDs grupo 1
-# Persona 'Manuel Marín Peral': e8b11968-ad6a-4dee-8873-4025cffab8a5
-# Cara 'Imagen1': 720d0c92-8bcf-408b-b226-3dcb78eb5dc6
-# Cara 'Imagen2': cb1a1b14-946d-4ccf-9fae-867e72386b01
-# Cara 'Imagen3': e704acca-91fd-46a9-9941-ef7c341e6af7
-# Cara 'Imagen4': b4795e66-a92f-4af8-840c-47ce7dce7573
-# Cara 'Imagen5': 7ad7e239-9507-4d3e-a0ff-3bc9fdbd9fec
-
-#Persona 'Juan Jose Escarabajal Hinojo': 589aa5b8-47ce-4e76-9304-46c7c6ac43ae
-# Cara 'Imagen1': 499e6bd2-bc4f-47bc-a4ea-c90f66a47954
-# Cara 'Imagen2': cf23b479-e6fe-4394-961c-a8db81819884
-
-# Todos los pasos desde crear el PersonGroup hasta comprobar el estado del entrenamiento de este
-#listPersonGroup()
-#createPersonGroup("id1", "grupo1", "Grupo de Personas 1", "recognition_02")
-#getPersonGroup("id1", True)
-#createPGPerson("id1", "Juan Jose Escarabajal Hinojo", "Persona 2 del Grupo 1")
-#print(getPGPerson("id1", "589aa5b8-47ce-4e76-9304-46c7c6ac43ae"))
-#listPGPerson("id1")
-#addFacePGPerson("id1", "589aa5b8-47ce-4e76-9304-46c7c6ac43ae", "C:\\Users\\Manuel\\GitRepos\\TFGSmarhome\\imaganes-entrenamiento\\Persona_2\\imagen98.png", "Imagen2")
-#getFacePGPerson("id1", "589aa5b8-47ce-4e76-9304-46c7c6ac43ae", "cf23b479-e6fe-4394-961c-a8db81819884")
-#trainPersonGroup("id1")
-#getTrainingStatus("id1")
-
-
-
-# IDs grupo 2
-# Persona 'Manuel Marín Peral': 22084147-57e0-4058-86e5-1b5ac018f3b5
-# Cara 'Imagen1': d456d9cc-2b52-4e02-b148-383bc47e0750
-# Cara 'Imagen2': e02907ef-87a9-48b8-b31e-3892bffe9be7
-# Cara 'Imagen3': 7d0f1404-d183-467e-99f3-c92ba89dd4e3
-# Cara 'Imagen4': 1f55fd2a-1863-450c-b465-30a8bdbb5293
-# Cara 'Imagen5': 9047c178-8b85-494f-b59d-b70751bf69f6
-
-# Todos los pasos desde crear el PersonGroup hasta comprobar el estado del entrenamiento de este
-#listPersonGroup()
-#createPersonGroup("id2", "grupo2", "Grupo de Personas 2", "recognition_01")
-#getPersonGroup("id2", True)
-#createPGPerson("id2", "Manuel Marin Peral", "Persona 1 del Grupo 2")
-#print(getPGPerson("id2", "22084147-57e0-4058-86e5-1b5ac018f3b5"))
-#listPGPerson("id2")
-#addFacePGPerson("id2", "22084147-57e0-4058-86e5-1b5ac018f3b5", "D:\\Usuarios\\Manuel\\Desktop\\Program\\Imagenes\\imagen5.jpg", "Imagen5")
-#getFacePGPerson("id2", "22084147-57e0-4058-86e5-1b5ac018f3b5", "9047c178-8b85-494f-b59d-b70751bf69f6")
-#trainPersonGroup("id2")
-#getTrainingStatus("id2")
+    return person_info
