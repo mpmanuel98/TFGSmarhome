@@ -1,534 +1,941 @@
+"""
+Module spacelynk_server.py.
+
+In this module there are some definitions ir order to send requests to
+the spaceLYnk server installed on the smart home. With that, the user 
+will be able to control the lights, blinds and curtains. Also some
+information from sensors can be obtained.
+"""
+
 import xml.etree.ElementTree as ET
 
 import requests
 
-##########################################
-################## URLs ##################
-##########################################
+"""
+Attributes
+----------
+Access URL to the spaceLYnk server.
+Dictionaries with the requests parameters.
+"""
 
-# URL de acceso al servidor
-url_servidor = "http://admin:amgingenieros@192.168.7.210/scada-remote?"
+url_spaceLYnk = "http://admin:amgingenieros@192.168.7.210/scada-remote?"
 
-##############################################################################
-################## PARAMETROS DE MANIPULACION DE ACTUADORES ##################
-##############################################################################
+# Lights
 
-#Estado luz cocina
-params_estado_luz_cocina = {"m": "xml",
-                        "r": "grp",    
-                        "fn": "getvalue",
-                        "alias": "1/1/7"
-                        }
+params_kitchen_lights_status = {
+    "m": "xml",
+    "r": "grp",    
+    "fn": "getvalue",
+    "alias": "1/1/7"
+}
 
-# Encender luz de la cocina
-params_luz_cocina_on = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "1/1/7",
-                        "value": "true"
-                        }
+params_kitchen_lights_on = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "1/1/7",
+    "value": "true"
+}
 
-# Apagar luz de la cocina
-params_luz_cocina_off = {"m": "xml",
-                         "r": "grp",
-                         "fn": "write",
-                         "alias": "1/1/7",
-                         "value": "false"
-                         }
+params_kitchen_lights_off = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "1/1/7",
+    "value": "false"
+}
 
-#Estado luz dormitorio
-params_estado_luz_dormitorio = {"m": "xml",
-                        "r": "grp",    
-                        "fn": "getvalue",
-                        "alias": "1/1/17"
-                        }
+params_bathroom_lights_status = {
+    "m": "xml",
+    "r": "grp",    
+    "fn": "getvalue",
+    #"alias": "1/1/13" # Mirror light
+    "alias": "1/1/11"
+}
 
-# Encender luz del dormitorio
-params_luz_dormitorio_on = {"m": "xml",
-                            "r": "grp",
-                            "fn": "write",
-                            "alias": "1/1/17",
-                            "value": "true"
-                            }
+params_bathroom_lights_on = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    #"alias": "1/1/13", # Mirror light
+    "alias": "1/1/11",
+    "value": "true"
+}
 
-# Apagar luz del dormitorio
-params_luz_dormitorio_off = {"m": "xml",
-                             "r": "grp",
-                             "fn": "write",
-                             "alias": "1/1/17",
-                             "value": "false"
-                             }
+params_bathroom_lights_off = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    #"alias": "1/1/13", # Mirror light
+    "alias": "1/1/11",
+    "value": "false"
+}
 
-#Estado luz distribuidor
-params_estado_luz_distribuidor = {"m": "xml",
-                        "r": "grp",    
-                        "fn": "getvalue",
-                        "alias": "1/1/5"
-                        }
+params_bedroom_lights_status = {
+    "m": "xml",
+    "r": "grp",    
+    "fn": "getvalue",
+    "alias": "1/1/17"
+}
 
-# Encender luz del distribuidor
-params_luz_distribuidor_on = {"m": "xml",
-                              "r": "grp",
-                              "fn": "write",
-                              "alias": "1/1/5",
-                              "value": "true"
-                              }
+params_bedroom_lights_on = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "1/1/17",
+    "value": "true"
+}
 
-# Apagar luz del distribuidor
-params_luz_distribuidor_off = {"m": "xml",
-                               "r": "grp",
-                               "fn": "write",
-                               "alias": "1/1/5",
-                               "value": "false"
-                               }
+params_bedroom_lights_off = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "1/1/17",
+    "value": "false"
+}
 
-#Estado luz salon
-params_estado_luz_salon = {"m": "xml",
-                        "r": "grp",    
-                        "fn": "getvalue",
-                        "alias": "1/1/15"
-                        }
+params_distributor_lights_status = {
+    "m": "xml",
+    "r": "grp",    
+    "fn": "getvalue",
+    "alias": "1/1/5"
+}
 
-# Encender luz del salon
-params_luz_salon_on = {"m": "xml",
-                       "r": "grp",
-                       "fn": "write",
-                       "alias": "1/1/15",
-                       "value": "true"
-                       }
+params_distributor_lights_on = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "1/1/5",
+    "value": "true"
+}
 
-# Apagar luz del salon
-params_luz_salon_off = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "1/1/15",
-                        "value": "false"
-                        }
+params_distributor_lights_off = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "1/1/5",
+    "value": "false"
+}
 
-# Obtener nivel de radiacion en el exterior
-params_get_radiation_level = {"m": "xml",
-                              "r": "grp",
-                              "fn": "getvalue",
-                              "alias": "3/2/6",
-                              }
+params_livroom_lights_status = {
+    "m": "xml",
+    "r": "grp",    
+    "fn": "getvalue",
+    "alias": "1/1/15"
+}
 
-#Estado persiana cocina
-params_estado_persiana_cocina = {"m": "xml",
-                        "r": "grp",    
-                        "fn": "getvalue",
-                        "alias": "2/1/4"
-                        }
+params_livroom_lights_on = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "1/1/15",
+    "value": "true"
+}
 
-# Subir persiana cocina
-params_subir_persiana_cocina = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "2/1/4",
-                        "value": "0"
-                        }
+params_livroom_lights_off = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "1/1/15",
+    "value": "false"
+}
 
-# Bajar persiana cocina
-params_bajar_persiana_cocina = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "2/1/4",
-                        "value": "100"
-                        }
+# Blinds
 
-#Estado persiana bano
-params_estado_persiana_bano = {"m": "xml",
-                        "r": "grp",    
-                        "fn": "getvalue",
-                        "alias": "2/1/8"
-                        }
+params_kitchen_blind_status = {
+    "m": "xml",
+    "r": "grp",    
+    "fn": "getvalue",
+    "alias": "2/1/4"
+}
 
-# Subir persiana bano
-params_subir_persiana_bano = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "2/1/8",
-                        "value": "0"
-                        }
+params_kitchen_blind_up = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "2/1/4",
+    "value": "0"
+}
 
-# Bajar persiana bano
-params_bajar_persiana_bano = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "2/1/8",
-                        "value": "100"
-                        }
+params_kitchen_blind_down = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "2/1/4",
+    "value": "100"
+}
 
-#Estado persiana dormitorio
-params_estado_persiana_dormitorio = {"m": "xml",
-                        "r": "grp",    
-                        "fn": "getvalue",
-                        "alias": "2/1/12"
-                        }
+params_bathroom_blind_status = {
+    "m": "xml",
+    "r": "grp",    
+    "fn": "getvalue",
+    "alias": "2/1/8"
+}
 
-# Subir persiana dormitorio
-params_subir_persiana_dormitorio = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "2/1/12",
-                        "value": "0"
-                        }
+params_bathroom_blind_up = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "2/1/8",
+    "value": "0"
+}
 
-# Bajar persiana dormitorio
-params_bajar_persiana_dormitorio = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "2/1/12",
-                        "value": "100"
-                        }
+params_bathroom_blind_down = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "2/1/8",
+    "value": "100"
+}
 
-#Estado estor dormitorio
-params_estado_estor_dormitorio = {"m": "xml",
-                        "r": "grp",    
-                        "fn": "getvalue",
-                        "alias": "2/3/8"
-                        }
+params_bedroom_blind_status = {
+    "m": "xml",
+    "r": "grp",    
+    "fn": "getvalue",
+    "alias": "2/1/12"
+}
 
-# Subir estor dormitorio
-params_subir_estor_dormitorio = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "2/3/8",
-                        "value": "0"
-                        }
+params_bedroom_blind_up = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "2/1/12",
+    "value": "0"
+}
 
-# Bajar estor dormitorio
-params_bajar_estor_dormitorio = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "2/3/8",
-                        "value": "100"
-                        }
+params_bedroom_blind_down = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "2/1/12",
+    "value": "100"
+}
 
-#Estado estor salon
-params_estado_estor_salon = {"m": "xml",
-                        "r": "grp",    
-                        "fn": "getvalue",
-                        "alias": "2/3/14"
-                        }
+# Curtains
 
-#-------------------------------------NO FUNCIONA
-# Subir estor salon
-params_subir_estor_salon = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "2/3/14",
-                        "value": "0"
-                        }
-#-------------------------------------NO FUNCIONA
-# Bajar estor salon
-params_bajar_estor_salon = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "2/3/14",
-                        "value": "100"
-                        }
+params_bedroom_curtain_status = {
+    "m": "xml",
+    "r": "grp",    
+    "fn": "getvalue",
+    "alias": "2/3/8"
+}
 
-#Estado estor aula
-params_estado_estor_aula = {"m": "xml",
-                        "r": "grp",    
-                        "fn": "getvalue",
-                        "alias": "2/3/12"
-                        }
+params_bedroom_curtain_up = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "2/3/8",
+    "value": "0"
+}
 
-# Subir estor aula
-params_subir_estor_aula = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "2/3/12",
-                        "value": "0"
-                        }
+params_bedroom_curtain_down = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "2/3/8",
+    "value": "100"
+}
 
-# Bajar estor aula
-params_bajar_estor_aula = {"m": "xml",
-                        "r": "grp",
-                        "fn": "write",
-                        "alias": "2/3/12",
-                        "value": "100"
-                        }
+params_livroom_curtain_status = {
+    "m": "xml",
+    "r": "grp",    
+    "fn": "getvalue",
+    "alias": "2/3/4"
+}
 
+params_livroom_curtain_up = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "2/3/4",
+    "value": "0"
+}
 
-# Sensor de deteccion de lluvia
-params_hay_lluvia = {"m": "xml",
-                        "r": "grp",
-                        "fn": "getvalue",
-                        "alias": "3/2/10"
-                        }
+params_livroom_curtain_down = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "2/3/4",
+    "value": "100"
+}
 
-# Sensor de deteccion de velocidad del viento
-params_velocidad_viento = {"m": "xml",
-                        "r": "grp",
-                        "fn": "getvalue",
-                        "alias": "3/2/4"
-                        }
+params_class_curtain_status = {
+    "m": "xml",
+    "r": "grp",    
+    "fn": "getvalue",
+    "alias": "2/3/12"
+}
 
-#############################################################################
-################## FUNCIONES DE MANIPULACION DE ACTUADORES ##################
-#############################################################################
+params_class_curtain_up = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "2/3/12",
+    "value": "0"
+}
+
+params_class_curtain_down = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "write",
+    "alias": "2/3/12",
+    "value": "100"
+}
+
+# Information from sensors
+
+params_get_radiation_level = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "getvalue",
+    "alias": "3/2/6",
+}
+
+params_rain_status = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "getvalue",
+    "alias": "3/2/10"
+}
+
+params_wind_speed = {
+    "m": "xml",
+    "r": "grp",
+    "fn": "getvalue",
+    "alias": "3/2/4"
+}
 
 """
-Out:    'true' -> Exito en la llamada a la funcion.
+Definitions (functions)
+----------
 """
-def luz_cocina_on():
-    state_result = requests.get(url_servidor, params=params_luz_cocina_on)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def luz_cocina_off():
-    state_result = requests.get(url_servidor, params=params_luz_cocina_off)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+# Lights
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def luz_dormitorio_on():
-    state_result = requests.get(url_servidor, params=params_luz_dormitorio_on)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+def get_kitchen_lights_status():
+    """Gets the kitchen lights status.
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def luz_dormitorio_off():
-    state_result = requests.get(url_servidor, params=params_luz_dormitorio_off)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    Returns
+    -------
+    bool
+        True: Lights on.
+        False: Lights off.
+    """
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def luz_distribuidor_on():
-    state_result = requests.get(url_servidor, params=params_luz_distribuidor_on)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    response = requests.get(url_spaceLYnk, params=params_kitchen_lights_status)
+    response_xml = ET.fromstring(response.text)
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def luz_distribuidor_off():
-    state_result = requests.get(url_servidor, params=params_luz_distribuidor_off)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    if(response_xml.text == "true"):
+        return True
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def luz_salon_on():
-    state_result = requests.get(url_servidor, params=params_luz_salon_on)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    return False
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def luz_salon_off():
-    state_result = requests.get(url_servidor, params=params_luz_salon_off)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+def kitchen_lights_on():
+    """Turns the kitchen lights on.
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def subir_persiana_cocina():
-    state_result = requests.get(url_servidor, params=params_subir_persiana_cocina)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+    
+    response = requests.get(url_spaceLYnk, params=params_kitchen_lights_on)
+    response_xml = ET.fromstring(response.text)
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def bajar_persiana_cocina():
-    state_result = requests.get(url_servidor, params=params_bajar_persiana_cocina)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    if(response_xml.text == "true"):
+        return True
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def subir_persiana_bano():
-    state_result = requests.get(url_servidor, params=params_subir_persiana_bano)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    return False
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def bajar_persiana_bano():
-    state_result = requests.get(url_servidor, params=params_bajar_persiana_bano)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+def kitchen_lights_off():
+    """Turns the kitchen lights off.
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def subir_persiana_dormitorio():
-    state_result = requests.get(url_servidor, params=params_subir_persiana_dormitorio)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def bajar_persiana_dormitorio():
-    state_result = requests.get(url_servidor, params=params_bajar_persiana_dormitorio)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    response = requests.get(url_spaceLYnk, params=params_kitchen_lights_off)
+    response_xml = ET.fromstring(response.text)
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def subir_estor_dormitorio():
-    state_result = requests.get(url_servidor, params=params_subir_estor_dormitorio)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    if(response_xml.text == "true"):
+        return True
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def bajar_estor_dormitorio():
-    state_result = requests.get(url_servidor, params=params_bajar_estor_dormitorio)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    return False
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def subir_estor_aula():
-    state_result = requests.get(url_servidor, params=params_subir_estor_aula)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+def get_bathroom_lights_status():
+    """Gets the bathroom lights status.
 
-"""
-Out:    'true' -> Exito en la llamada a la funcion.
-"""
-def bajar_estor_aula():
-    state_result = requests.get(url_servidor, params=params_bajar_estor_aula)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    Returns
+    -------
+    bool
+        True: Lights on.
+        False: Lights off.
+    """
 
-"""
-Out:    Nivel de radiacion solar en el exterior.
-"""
+    response = requests.get(url_spaceLYnk, params=params_bathroom_lights_status)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def bathroom_lights_on():
+    """Turns the bathroom lights on.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+    
+    response = requests.get(url_spaceLYnk, params=params_bathroom_lights_on)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def bathroom_lights_off():
+    """Turns the bathroom lights off.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_bathroom_lights_off)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def get_bedroom_lights_status():
+    """Gets the bedroom lights status.
+
+    Returns
+    -------
+    bool
+        True: Lights on.
+        False: Lights off.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_bedroom_lights_status)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def bedroom_lights_on():
+    """Turns the bedroom lights on.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_bedroom_lights_on)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def bedroom_lights_off():
+    """Turns the bedroom lights off.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_bedroom_lights_off)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def get_distributor_lights_status():
+    """Gets the distributor lights status.
+
+    Returns
+    -------
+    bool
+        True: Lights on.
+        False: Lights off.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_distributor_lights_status)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def distributor_lights_on():
+    """Turns the distributor lights on.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_distributor_lights_on)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def distributor_lights_off():
+    """Turns the distributor lights off.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_distributor_lights_off)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def get_livroom_lights_status():
+    """Gets the living room lights status.
+
+    Returns
+    -------
+    bool
+        True: Lights on.
+        False: Lights off.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_livroom_lights_status)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def livroom_lights_on():
+    """Turns the living room lights on.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_livroom_lights_on)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def livroom_lights_off():
+    """Turns the living room lights off.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_livroom_lights_off)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+# Blinds
+
+def get_kitchen_blind_status():
+    """Gets the kitchen blind status.
+
+    Returns
+    -------
+    int
+        Level (100: blind down; 0: blind up).
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_kitchen_blind_status)
+    response_xml = ET.fromstring(response.text)
+    kitchen_blind_status = int(response_xml.text)
+
+    return kitchen_blind_status
+
+def kitchen_blind_up():
+    """Raises the kitchen blind.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_kitchen_blind_up)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def kitchen_blind_down():
+    """Rolls down the kitchen blind.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+    response = requests.get(url_spaceLYnk, params=params_kitchen_blind_down)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def get_bathroom_blind_status():
+    """Gets the bathroom blind status.
+
+    Returns
+    -------
+    int
+        Level (100: blind down; 0: blind up).
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_bathroom_blind_status)
+    response_xml = ET.fromstring(response.text)
+    bathroom_blind_status = int(response_xml.text)
+
+    return bathroom_blind_status
+
+def bathroom_blind_up():
+    """Raises the bathroom blind.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+    response = requests.get(url_spaceLYnk, params=params_bathroom_blind_up)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def bathroom_blind_down():
+    """Rolls down the bathroom blind.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_bathroom_blind_down)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def get_bedroom_blind_status():
+    """Gets the bedroom blind status.
+
+    Returns
+    -------
+    int
+        Level (100: blind down; 0: blind up).
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_bedroom_blind_status)
+    response_xml = ET.fromstring(response.text)
+    bedroom_blind_status = int(response_xml.text)
+
+    return bedroom_blind_status
+
+def bedroom_blind_up():
+    """Raises the bedroom blind.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_bedroom_blind_up)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def bedroom_blind_down():
+    """Rolls down the bedroom blind.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_bedroom_blind_down)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+# Curtains
+
+def get_bedroom_curtain_status():
+    """Gets the bedroom curtain status.
+
+    Returns
+    -------
+    int
+        Level (100: curtain down; 0: curtain up).
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_bedroom_curtain_status)
+    response_xml = ET.fromstring(response.text)
+    bedroom_curtain_status = int(response_xml.text)
+
+    return bedroom_curtain_status
+
+def bedroom_curtain_up():
+    """Raises the bedroom curtain.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_bedroom_curtain_up)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def bedroom_curtain_down():
+    """Rolls down the bedroom curtain.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_bedroom_curtain_down)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def get_class_curtain_status():
+    """Gets the class curtain status.
+
+    Returns
+    -------
+    int
+        Level (100: curtain down; 0: curtain up).
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_class_curtain_status)
+    response_xml = ET.fromstring(response.text)
+    class_curtain_status = int(response_xml.text)
+
+    return class_curtain_status
+
+def class_curtain_up():
+    """Raises the class curtain.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+    
+    response = requests.get(url_spaceLYnk, params=params_class_curtain_up)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def class_curtain_down():
+    """Rolls down the class curtain.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_class_curtain_down)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def get_livroom_curtain_status():
+    """Gets the living room curtain status.
+
+    Returns
+    -------
+    int
+        Level (100: curtain down; 0: curtain up).
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_livroom_curtain_status)
+    response_xml = ET.fromstring(response.text)
+    livroom_curtain_status = int(response_xml.text)
+
+    return livroom_curtain_status
+
+def livroom_curtain_up():
+    """Raises the living room curtain.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+    
+    response = requests.get(url_spaceLYnk, params=params_livroom_curtain_up)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+def livroom_curtain_down():
+    """Rolls down the living room curtain.
+
+    Returns
+    -------
+    bool
+        True: Success.
+        False: Error.
+    """
+
+    response = requests.get(url_spaceLYnk, params=params_livroom_curtain_down)
+    response_xml = ET.fromstring(response.text)
+
+    if(response_xml.text == "true"):
+        return True
+
+    return False
+
+# Information from sensors
+
 def get_radiation_level():
-    state_result = requests.get(url_servidor, params=params_get_radiation_level)
-    result_xml = ET.fromstring(state_result.text)
-    return float(result_xml.text)
+    """Gets the outside raditation level.
 
-"""
-Out:    'true' -> Luz encendida.
-        'false' -> Luz apagada.
-"""
-def get_estado_luz_cocina():
-    state_result = requests.get(url_servidor, params=params_estado_luz_cocina)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    Returns
+    -------
+    float
+        Raditation level.
+    """
 
-"""
-Out:    'true' -> Luz encendida.
-        'false' -> Luz apagada.
-"""
-def get_estado_luz_distribuidor():
-    state_result = requests.get(url_servidor, params=params_estado_luz_distribuidor)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    response = requests.get(url_spaceLYnk, params=params_get_radiation_level)
+    response_xml = ET.fromstring(response.text)
+    raditaion_level = float(response_xml.text)
 
-"""
-Out:    'true' -> Luz encendida.
-        'false' -> Luz apagada.
-"""
-def get_estado_luz_salon():
-    state_result = requests.get(url_servidor, params=params_estado_luz_salon)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+    return raditaion_level
 
-"""
-Out:    'true' -> Luz encendida.
-        'false' -> Luz apagada.
-"""
-def get_estado_luz_dormitorio():
-    state_result = requests.get(url_servidor, params=params_estado_luz_dormitorio)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
+def get_rain_status():
+    """Determines whether is raining or not.
 
-"""
-Out:    100 -> Persiana bajada.
-        0 -> Persiana subida.
-"""
-def get_estado_persiana_cocina():
-    state_result = requests.get(url_servidor, params=params_estado_persiana_cocina)
-    result_xml = ET.fromstring(state_result.text)
-    estado_persiana_cocina = result_xml.text
-    return int(estado_persiana_cocina)
+    Returns
+    -------
+    bool
+        True: It is raining.
+        False: It isn't raining.
+    """
 
-"""
-Out:    100 -> Persiana bajada.
-        0 -> Persiana subida.
-"""
-def get_estado_persiana_bano():
-    state_result = requests.get(url_servidor, params=params_estado_persiana_bano)
-    result_xml = ET.fromstring(state_result.text)
-    return int(result_xml.text)
+    response = requests.get(url_spaceLYnk, params=params_rain_status)
+    response_xml = ET.fromstring(response.text)
 
-"""
-Out:    100 -> Persiana bajada.
-        0 -> Persiana subida.
-"""
-def get_estado_persiana_dormitorio():
-    state_result = requests.get(url_servidor, params=params_estado_persiana_dormitorio)
-    result_xml = ET.fromstring(state_result.text)
-    return int(result_xml.text)
+    if(response_xml.text == "true"):
+        return False
 
-"""
-Out:    100 -> Estor bajado.
-        0 -> Estor subido.
-"""
-def get_estado_estor_dormitorio():
-    state_result = requests.get(url_servidor, params=params_estado_estor_dormitorio)
-    result_xml = ET.fromstring(state_result.text)
-    return int(result_xml.text)
+    return True
 
-"""
-Out:    100 -> Estor bajado.
-        0 -> Estor subido.
-"""
-def get_estado_estor_salon():
-    state_result = requests.get(url_servidor, params=params_estado_estor_salon)
-    result_xml = ET.fromstring(state_result.text)
-    return int(result_xml.text)
+def get_wind_speed():
+    """Determines the wind speed.
 
-"""
-Out:    100 -> Estor bajado.
-        0 -> Estor subido.
-"""
-def get_estado_estor_aula():
-    state_result = requests.get(url_servidor, params=params_estado_estor_aula)
-    result_xml = ET.fromstring(state_result.text)
-    return int(result_xml.text)
+    Returns
+    -------
+    float
+        Wind speed (m/s).
+    """
 
-"""
+    response = requests.get(url_spaceLYnk, params=params_wind_speed)
+    response_xml = ET.fromstring(response.text)
+    wind_speed = float(response_xml.text)
 
-DUDA DE SI FUNCIONA CORRECTAMENTE
-
-Out:    'true' -> Hay lluvia.
-        'false' -> No hay lluvia.
-"""
-def get_lluvia():
-    state_result = requests.get(url_servidor, params=params_hay_lluvia)
-    result_xml = ET.fromstring(state_result.text)
-    return result_xml.text
-
-"""
-Out:    Velocidad del viento.
-"""
-def get_velocidad_viento():
-    state_result = requests.get(url_servidor, params=params_velocidad_viento)
-    result_xml = ET.fromstring(state_result.text)
-    return float(result_xml.text)
+    return wind_speed

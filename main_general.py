@@ -7,31 +7,31 @@ import modules.spacelynk_server as SPL
 
 
 def wait_for_detection(wait_time):
-    inicio_de_tiempo = time.time()
-    tiempo_final = time.time()
-    tiempo_transcurrido = tiempo_final - inicio_de_tiempo
-    while(tiempo_transcurrido < wait_time):
-        img = FW.take_snap(FW.url_pruebas_casa)
+    initial_time = time.time()
+    final_time = time.time()
+    time_elapsed = final_time - initial_time
+    while(time_elapsed < wait_time):
+        img = FWC.take_snap(FWC.url_home_tests)
         if(AFA.detectPresence(img, "detection_01", "recognition_02")):
-            inicio_de_tiempo = time.time()
-        tiempo_final = time.time()
-        tiempo_transcurrido = tiempo_final - inicio_de_tiempo
+            initial_time = time.time()
+        final_time = time.time()
+        time_elapsed = final_time - initial_time
 
 while True:
-    mot_alarm_coc = FW.get_motion_detect_alarm(FW.url_pruebas_casa)
-    img = FW.take_snap(FW.url_pruebas_casa)
+    kitchen_motion_alarm = FWC.get_motion_detect_alarm(FWC.url_home_tests)
+    img = FWC.take_snap(FWC.url_home_tests)
 
-    if(mot_alarm_coc == 2):
+    if(kitchen_motion_alarm == 2):
         if(SPL.get_radiation_level() < 1700):
-            if(SPL.get_estado_luz_cocina() == "false"):
-                SPL.luz_cocina_on()
+            if(SPL.get_kitchen_lights_status() == False):
+                SPL.kitchen_lights_on()
                 wait_for_detection(300)
         else:
-            if(SPL.get_estado_persiana_cocina() > 75):
-                SPL.subir_persiana_cocina()
+            if(SPL.get_kitchen_blind_status() > 75):
+                SPL.kitchen_blind_up()
                 wait_for_detection(300)
     else:
-        if(SPL.get_estado_luz_cocina() == "true"):
-            SPL.luz_cocina_off()
-        if(SPL.get_estado_persiana_cocina() < 25):
-            SPL.bajar_persiana_cocina()
+        if(SPL.get_kitchen_lights_status() == True):
+            SPL.kitchen_lights_off()
+        if(SPL.get_kitchen_blind_status() < 25):
+            SPL.kitchen_blind_down()

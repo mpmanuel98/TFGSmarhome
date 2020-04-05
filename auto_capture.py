@@ -4,11 +4,11 @@ import time
 import xml.etree.ElementTree as ET
 
 import cv2
-import face_recognition as FR
 import numpy as np
 import requests
 from PIL import Image
 
+import face_recognition as FR
 import modules.azure_faceapi as AFA
 import modules.foscam_webcams as FWC
 import modules.sony_tv as STV

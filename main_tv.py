@@ -11,35 +11,13 @@ import modules.sony_tv as STV
 import modules.spacelynk_server as SPL
 import recognition_opencv as RCV
 
-##########################################
-################## URLs ##################
-##########################################
-
-# URL de acceso a la camara del salon
-url_salon = "http://192.168.7.225:8894/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara del distribuidor
-url_distribuidor = "http://192.168.7.224:8893/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara de la cocina
-url_cocina = "http://192.168.7.223:8892/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara del dormitorio
-url_dormitorio = "http://192.168.7.222:8891/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara de la TV
-url_cam_tv = "http://192.168.7.226:8895/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara en mi casa
-url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
-
 def reset_counters():
     return 0, 0, 0, 0, 0, 0
 
 print("Comenzando pre-procesamiento...")
 
 #Nombre asociado a cada etiqueta: 0 => Nadie | 1 => Manuel | 2 => Juanjo
-nombre_personas = ["", "Manuel", "Juanjo"]
+nombre_personas = ["", "Manuel Marín Peral", "Juan Jose Escarabajal Hinojo"]
 
 #Obtenemos las listas necesarias para el entrenamiento
 faces, labels = RCV.create_training_structures("imagenes-entrenamiento")

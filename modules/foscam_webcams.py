@@ -26,79 +26,95 @@ url_kitchen = "http://192.168.7.223:8892/cgi-bin/CGIProxy.fcgi?"
 url_bedroom = "http://192.168.7.222:8891/cgi-bin/CGIProxy.fcgi?"
 url_home_tests = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
-params_zoom_in = {"usr": "admin",
-                  "pwd": "AmgCam18*",
-                  "cmd": "zoomIn"
-                  }
+params_zoom_in = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "zoomIn"
+}
 
-params_zoom_out = {"usr": "admin",
-                   "pwd": "AmgCam18*",
-                   "cmd": "zoomOut"
-                   }
+params_zoom_out = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "zoomOut"
+}
 
-params_zoom_stop = {"usr": "admin",
-                    "pwd": "AmgCam18*",
-                    "cmd": "zoomStop"
-                    }
+params_zoom_stop = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "zoomStop"
+}
 
-params_movement_stop = {"usr": "admin",
-                        "pwd": "AmgCam18*",
-                        "cmd": "ptzStopRun"
-                        }
+params_movement_stop = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "ptzStopRun"
+}
 
-params_move_up = {"usr": "admin",
-                  "pwd": "AmgCam18*",
-                  "cmd": "ptzMoveUp"
-                  }
+params_move_up = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "ptzMoveUp"
+}
 
-params_move_down = {"usr": "admin",
-                    "pwd": "AmgCam18*",
-                    "cmd": "ptzMoveDown"
-                    }
+params_move_down = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "ptzMoveDown"
+}
 
-params_move_left = {"usr": "admin",
-                    "pwd": "AmgCam18*",
-                    "cmd": "ptzMoveLeft"
-                    }
+params_move_left = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "ptzMoveLeft"
+}
 
-params_move_right = {"usr": "admin",
-                     "pwd": "AmgCam18*",
-                     "cmd": "ptzMoveRight"
-                     }
-params_move_top_left = {"usr": "admin",
-                        "pwd": "AmgCam18*",
-                        "cmd": "ptzMoveTopLeft"
-                        }
+params_move_right = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "ptzMoveRight"
+}
 
-params_move_top_right = {"usr": "admin",
-                         "pwd": "AmgCam18*",
-                         "cmd": "ptzMoveTopRight"
-                         }
+params_move_top_left = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "ptzMoveTopLeft"
+}
 
-params_move_bottom_left = {"usr": "admin",
-                           "pwd": "AmgCam18*",
-                           "cmd": "ptzMoveBottomLeft"
-                           }
+params_move_top_right = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "ptzMoveTopRight"
+}
 
-params_move_bottom_right = {"usr": "admin",
-                            "pwd": "AmgCam18*",
-                            "cmd": "ptzMoveBottomRight"
-                            }
+params_move_bottom_left = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "ptzMoveBottomLeft"
+}
 
-params_dev_state = {"usr": "admin",
-                    "pwd": "AmgCam18*",
-                    "cmd": "getDevState"
-                    }
+params_move_bottom_right = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "ptzMoveBottomRight"
+}
 
-params_get_config_motion_detect = {"usr": "admin",
-                                   "pwd": "AmgCam18*",
-                                   "cmd": "getMotionDetectConfig1"
-                                   }
+params_dev_state = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "getDevState"
+}
 
-params_take_snap = {"usr": "admin",
-                    "pwd": "AmgCam18*",
-                    "cmd": "snapPicture2"
-                    }
+params_get_config_motion_detect = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "getMotionDetectConfig1"
+}
+
+params_take_snap = {
+    "usr": "admin",
+    "pwd": "AmgCam18*",
+    "cmd": "snapPicture2"
+}
 
 """
 Definitions (functions)
@@ -439,7 +455,7 @@ def take_and_save_capture(camera_url, dir_dest):
     Returns
     -------
     int
-        200: Success.
+        Response status code (200 = Success).
     """
 
     response = requests.get(camera_url, params=params_take_snap)
