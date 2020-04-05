@@ -1,39 +1,23 @@
-import modules.foscam_webcams as FWC
-import recognition_opencv as ROCV
 import io
 import time
-from PIL import Image
+
 import cv2
 import numpy as np
+from PIL import Image
 
-##########################################
-################## URLs ##################
-##########################################
-
-# URL de acceso a la camara del salon
-url_salon = "http://192.168.7.225:8894/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara del distribuidor
-url_distribuidor = "http://192.168.7.224:8893/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara de la cocina
-url_cocina = "http://192.168.7.223:8892/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara del dormitorio
-url_dormitorio = "http://192.168.7.222:8891/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara de la TV
-url_cam_tv = "http://192.168.7.226:8895/cgi-bin/CGIProxy.fcgi?"
-
-# URL de acceso a la camara en mi casa
-url_pruebas_casa = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
+import face_recognition as FR
+import modules.azure_faceapi as AFA
+import modules.foscam_webcams as FWC
+import modules.sony_tv as STV
+import modules.spacelynk_server as SPL
+import recognition_opencv as RCV
 
 #Nombre asociado a cada etiqueta: 0 => Nadie | 1 => Manuel | 2 => Juanjo
 nombre_personas = ["", "Manuel", "Juanjo"]
 
 #Obtenemos las listas necesarias para el entrenamiento
 print("Creando las estructuras para el entrenamiento...")
-faces, labels = ROCV.create_training_structures("imagenes-entrenamiento")
+faces, labels = RCV.create_training_structures("imagenes-entrenamiento")
 
 #Mostramos el total de caras y etiquetas obtenido (debe ser el mismo, una etiqueta por cara)
 print("Caras totales: ", len(faces))
@@ -62,7 +46,7 @@ print("\nCOMENZANDO PROCESO DE RECONOCIMIENTO FACIAL")
 while True:
     
     #Obtenemos un frame de la camara IP
-    frame = FWC.take_snap(url_pruebas_casa)
+    frame = FWC.take_snap(FWC.url_home_tests)
 
     #Abrimos la imagen
     pil_image = Image.open(io.BytesIO(frame))
@@ -72,7 +56,7 @@ while True:
     #test_img1 = cv2.imread("pruebas_smarthome/imagen" + str(i) + ".png")
 
     #Se realiza un reconocimiento de la imagen
-    people = ROCV.predict(image, recognizer, nombre_personas)
+    people = RCV.predict(image, recognizer, nombre_personas)
 
     #Si no se detectan caras, se informa. En caso de exito, se muestra el nombre de la persona reconocida y la confiabilidad del reconocimiento
     if people is None:
