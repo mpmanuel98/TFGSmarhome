@@ -13,13 +13,13 @@ def create_training_structures(samples_path):
 
     #Recorremos cada uno de los directorios que se encuentran en la ruta "samples_path"
     for dir_name in directories:
-
+        
         #Los directorios validos para el entrenamiento tienen el prefijo "Persona_"
-        if dir_name.startswith("Persona_"):
+        if dir_name.startswith("Person_"):
 
             #Obtenemos la etiqueta del nombre del directorio que contiene la persona
             #Formato del nombre del directorio => Persona_"etiqueta"
-            label = int(dir_name.replace("Persona_", ""))
+            label = int(dir_name.replace("Person_", ""))
 
             #Creamos la ruta del directorio que contiene a una persona concatenando el directorio raiz "samples_path" con el nombre del directorio de una persona
             subject_dir_path = samples_path + "/" + dir_name

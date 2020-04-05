@@ -10,14 +10,14 @@ import modules.azure_faceapi as AFA
 import modules.foscam_webcams as FWC
 import modules.sony_tv as STV
 import modules.spacelynk_server as SPL
-import recognition_opencv as RCV
+import modules.recognition_opencv as RCV
 
 #Nombre asociado a cada etiqueta: 0 => Nadie | 1 => Manuel | 2 => Juanjo
 nombre_personas = ["", "Manuel", "Juanjo"]
 
 #Obtenemos las listas necesarias para el entrenamiento
 print("Creando las estructuras para el entrenamiento...")
-faces, labels = RCV.create_training_structures("imagenes-entrenamiento")
+faces, labels = RCV.create_training_structures("C:\\Users\\Manuel\\GitRepos\\TFGSmarhome\\training-images")
 
 #Mostramos el total de caras y etiquetas obtenido (debe ser el mismo, una etiqueta por cara)
 print("Caras totales: ", len(faces))
@@ -46,7 +46,7 @@ print("\nCOMENZANDO PROCESO DE RECONOCIMIENTO FACIAL")
 while True:
     
     #Obtenemos un frame de la camara IP
-    frame = FWC.take_snap(FWC.url_home_tests)
+    frame = FWC.take_capture(FWC.url_home_tests)
 
     #Abrimos la imagen
     pil_image = Image.open(io.BytesIO(frame))
