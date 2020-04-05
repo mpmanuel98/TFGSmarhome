@@ -6,8 +6,8 @@ the Azure Face API cloud service. With that, the user will be able to
 create person groups, insert people (previously created) in these
 person groups and add faces to each person. After that some tasks like
 face detection or face identification can be performed.
-
 """
+
 import json
 
 import requests
@@ -15,7 +15,10 @@ import requests
 """
 Attributes
 ----------
+API Subscription keys.
+Endpoint and services URLs.
 """
+
 subscription_key1 = "bbd185d3018149b7bbd5fb2d9e6e937f"
 subscription_key2 = "4f002c71a79f46da988bc2ce2105224e"
 
@@ -27,6 +30,7 @@ faceia_url_identify = "/face/v1.0/identify/"
 """
 Definitions (functions)
 ----------
+All the functions to make the requests to the Azure Face API
 """
 
 def detect_face(img, detection_model, recognition_model):

@@ -1,6 +1,9 @@
 import time
-import modules.foscam_webcams as FW
 import modules.azure_faceapi as AFA
+import modules.foscam_webcams as FWC
+import modules.sony_tv as STV
+import modules.spacelynk_server as SPL
+import recognition_opencv as RCV
 
 """
 def wait_for_detection(wait_time):
@@ -21,5 +24,5 @@ def wait_for_detection(wait_time):
 
 wait_for_detection(10)
 """
-while(True):
-    print(FW.get_motion_detect_alarm(FW.url_pruebas_casa))
+
+print(FWC.take_and_save_capture(FWC.url_home_tests, "tests") + 2)
