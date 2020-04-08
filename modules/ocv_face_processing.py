@@ -6,6 +6,10 @@ to create the necessary structures to make the subsequent face
 recognition. Also, there is a Class to create Recognizer instances using
 a specified algorithm. For all the face processes OpenCV algorithms
 are used.
+
+Also some functions are defined:
+    detect_faces(img)
+    create_recognition_structures(training_images_path)
 """
 
 __version__ = "1.0"

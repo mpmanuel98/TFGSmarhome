@@ -10,8 +10,6 @@ enabled on the TV.
 
 Also a function is defined:
     reset_counters()
-        This function resets the counters established for
-        each registered person or group of people.
 """
 
 __version__ = "1.0"
@@ -30,7 +28,8 @@ import modules.ocv_face_processing as OFP
 import modules.sony_tv as STV
 
 def reset_counters():
-    """Resets the counters to zero.
+    """Resets the counters established for each registered person
+    or group of people.
 
     Returns
     -------
