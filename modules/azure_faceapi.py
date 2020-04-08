@@ -8,6 +8,9 @@ person groups and add faces to each person. After that some tasks like
 face detection or face identification can be performed.
 """
 
+__version__ = "1.0"
+__author__ = "Manuel Marín Peral"
+
 import json
 
 import requests

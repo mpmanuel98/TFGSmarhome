@@ -1,3 +1,22 @@
+"""
+Script main_tv.py.
+
+This script controls automatically the TV of the smart home. The app
+that is going to be activated depends on the person that is identified.
+If nobody is identified, the age of the person detected makes the
+diference between activating an app or another. Otherwise, if a large
+group of people is detected (3 or more people) a party mode is being
+enabled on the TV.
+
+Also a function is defined:
+    reset_counters()
+        This function resets the counters established for
+        each registered person or group of people.
+"""
+
+__version__ = "1.0"
+__author__ = "Manuel Marín Peral"
+
 import io
 import time
 
@@ -7,130 +26,123 @@ from PIL import Image
 
 import modules.azure_faceapi as AFA
 import modules.foscam_webcams as FWC
+import modules.ocv_face_processing as OFP
 import modules.sony_tv as STV
-import modules.spacelynk_server as SPL
-import recognition_opencv as RCV
 
 def reset_counters():
+    """Resets the counters to zero.
+
+    Returns
+    -------
+    int
+        zero to reset the counter.
+    int
+        zero to reset the counter.
+    int
+        zero to reset the counter.
+    int
+        zero to reset the counter.
+    int
+        zero to reset the counter.
+    int
+        zero to reset the counter.
+    """
+    
     return 0, 0, 0, 0, 0, 0
 
-print("Comenzando pre-procesamiento...")
+print("Starting pre-processing...")
 
-#Nombre asociado a cada etiqueta: 0 => Nadie | 1 => Manuel | 2 => Juanjo
-nombre_personas = ["", "Manuel Marín Peral", "Juan Jose Escarabajal Hinojo"]
+faces, labels, subject_names = OFP.create_recognition_structures("training-images")
+recognizer = OFP.Recognizer("fisherfaces", faces, labels, subject_names)
 
-#Obtenemos las listas necesarias para el entrenamiento
-faces, labels = RCV.create_training_structures("imagenes-entrenamiento")
+print("Pre-processing finished!")
 
-#Mostramos el total de caras y etiquetas obtenido (debe ser el mismo, una etiqueta por cara)
-print("Caras totales para el reconocimiento: ", len(faces))
-print("Etiquetas totales para el reconocimiento: ", len(labels))
+print("\nTV control process initiated.")
 
-print("\nCreando y entrenando el reconocedor facial...")
-#Creamos el reconocedor facial LBPH
-#recognizer = cv2.face.LBPHFaceRecognizer_create(radius=1, neighbors=8)
-
-#Creamos el reconocedor facial EigenFaceRecognizer
-#recognizer = cv2.face.EigenFaceRecognizer_create()
-
-#Creamos el reconocedor facial FisherFaceRecognizer
-recognizer = cv2.face.FisherFaceRecognizer_create()
-
-#Entrenamos el reconocedor con las dos listas obtenidas anteriormente
-recognizer.train(faces, np.array(labels))
-print("Finalizado el pre-procesamiento correctamente.")
-
-print("\nCOMENZANDO PROCESO DE RECONOCIMIENTO FACIAL")
-
-#Inicializando contadores y demas variables
-cont_manu = 0
-cont_juanjo = 0
-cont_rango1 = 0
-cont_rango2 = 0
-cont_rango3 = 0
-cont_rango4 = 0
-limit = 3
+manu_counter = 0
+juanjo_counter = 0
+range1_counter = 0
+range2_counter = 0
+range3_counter = 0
+range4_counter = 0
+counter_limit = 3
 refresh_time = 3
 detected_faces = []
 
 while True:
-    img = FWC.take_snap(url_pruebas_casa)
+    img = FWC.take_capture(FWC.url_home_tests)
 
-    #Abrimos la imagen
     pil_image = Image.open(io.BytesIO(img))
     image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
 
-    #Se realiza un reconocimiento de la imagen
-    people = RCV.predict(image, recognizer, nombre_personas)
+    people = recognizer.predict(image)
 
-    #Si no se detectan caras, se hacen acciones generales. En caso de exito, se realizan acciones personalizadas en funcion de la persona detectada/reconocida
     if people is None:
-        print("No se han detectado caras.")
+        print("No faces detected.")
     else:
         for person in people:
             print(person[0], person[1])
             if(person[1] < 3500.0):
                 name = person[0]
-                #Si se reconoce a Manuel se incrementa su contador, igualmente para Juanjo
-                if(name == "Manuel"):
-                    cont_manu += 1
-                elif(name == "Juanjo"):
-                    cont_juanjo += 1
+                if(name == "Manuel Marin Peral"):
+                    manu_counter += 1
+                    print(manu_counter)
+                elif(name == "Juan Jose Escarabajal Hinojo"):
+                    juanjo_counter += 1
             else:
-                detected_faces = AFA.detectFace(img, "detection_01", "recognition_02")
+                detected_faces = AFA.detect_face(img, "detection_01", "recognition_02")
                 if (detected_faces is None):
                     continue
                 else:
                     for face_info in detected_faces:
-                        edad = face_info.get("age")
-                        print("Persona de " + str(edad) + " años detectada.")
-                        #Se incrementa el contador del rango de edad correspondiente para la cara detectada
-                        if(edad < 18):
-                            cont_rango1 += 1
-                        elif((edad >= 18) and (edad < 30)):
-                            cont_rango2 += 1
-                        elif((edad >= 30) and (edad < 60)):
-                            cont_rango3 += 1
-                        elif(edad >= 60):
-                            cont_rango4 += 1
+                        age = face_info.get("age")
+                        print(str(age) + " ages person detected.")
+                        if(age < 18):
+                            range1_counter += 1
+                        elif((age >= 18) and (age < 30)):
+                            range2_counter += 1
+                        elif((age >= 30) and (age < 60)):
+                            range3_counter += 1
+                        elif(age >= 60):
+                            range4_counter += 1
 
-    if((cont_manu == limit) and (cont_juanjo == limit)):
-        print("Manuel y Juanjo reconocidos, cambiando fuente a HDMI 1...")
+    if((manu_counter == counter_limit) and (juanjo_counter == counter_limit)):
+        print("Manuel y Juanjo recognized, switching source to HDMI 1...")
         #STV.set_hdmi_source(1)
-        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
+        manu_counter, juanjo_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
-    elif(cont_manu == limit):
-        print("Manuel reconocido, abriendo Netflix...")
+    elif(manu_counter == counter_limit):
+        print("Manuel recognized, opening Netflix...")
         #STV.set_app("netflix")
-        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
+        manu_counter, juanjo_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
-    elif(cont_juanjo == limit):
-        print("Juanjo reconocido, abriendo Spotify...")
+    elif(juanjo_counter == counter_limit):
+        print("Juanjo recognized, opening Spotify...")
         #STV.set_app("spotify")
-        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
+        manu_counter, juanjo_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
-    elif(cont_rango1 == limit):
-        print("Persona del rango de edad 1 detectada, abriendo Clan TV...")
+    elif(range1_counter == counter_limit):
+        print("Person of age range 1 detected, opening Clan TV...")
         #STV.set_app("clantv")
-        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
+        manu_counter, juanjo_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
-    elif(cont_rango2 == limit):
-        print("Persona del rango de edad 2 detectada, abriendo 'APP DEPORTIVA'...")
+    elif(range2_counter == counter_limit):
+        print("Person of age range 2 detected, opening APP DEPORTIVA")
         #STV.set_app("")
-        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
+        manu_counter, juanjo_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
-    elif(cont_rango3 == limit):
-        print("Persona del rango de edad 3 detectada, abriendo Amazon Prime Video...")
+    elif(range3_counter == counter_limit):
+        print("Person of age range 3 detected, opening Amazon Prime Video...")
         #STV.set_app("prime-video")
-        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
+        manu_counter, juanjo_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
-    elif(cont_rango4 == limit):
-        print("Persona del rango de edad 4 detectada, abriendo Meteonews TV...")
+    elif(range4_counter == counter_limit):
+        print("Person of age range 4 detected, opening Meteonews TV...")
         #STV.set_app("meteonews")
-        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
+        manu_counter, juanjo_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
     elif(len(detected_faces) >= 3):
-        print("Grupo de numeroso personas detectado, abriendo modo fiesta...")
+        print("Large group of people detected, it's time to party!")
         #STV.set_app("party")
-        cont_manu, cont_juanjo, cont_rango1, cont_rango2, cont_rango3, cont_rango4 = reset_counters()
+        manu_counter, juanjo_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)

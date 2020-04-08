@@ -7,6 +7,9 @@ will be able to move the cameras, move to a preset point, zoom in,
 zoom out and take snaps.
 """
 
+__version__ = "1.0"
+__author__ = "Manuel Marín Peral"
+
 import io
 import xml.etree.ElementTree as ET
 

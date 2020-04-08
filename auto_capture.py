@@ -1,3 +1,17 @@
+"""
+Script auto_capture.py.
+
+This script allows the user to get a quality set of training images.
+The procedure consists on taking snapchots from the webcams and try
+to make a facial recognition, if a recognition is successful some
+indicators are checked (noise and blur) and if these indicators have
+values that satisfies the requirements, the image is saved in the
+directory corresponding to the subject that has been detected.
+"""
+
+__version__ = "1.0"
+__author__ = "Manuel Marín Peral"
+
 import io
 import os
 import time
@@ -8,7 +22,6 @@ import numpy as np
 import requests
 from PIL import Image
 
-import face_recognition as FR
 import modules.azure_faceapi as AFA
 import modules.foscam_webcams as FWC
 import modules.sony_tv as STV
@@ -25,12 +38,12 @@ subject2_counter = len(subject2_images)
 #Numero de imagenes totales requeridas para el entrenamiento
 limit = 10
 
-#Queremos obtener 'limit' imagenes por persona para el entrenamiento
+#Queremos obtener "limit" imagenes por persona para el entrenamiento
 while(not ((subject1_counter == limit) and (subject2_counter == limit))):
 
     print("Tomando imagen de muestra...")
     img = FWC.take_snap(FWC.url_pruebas_casa)
-    #data = open("imagenes/Manu/Tests/imagenTest3.jpg", 'rb').read()
+    #data = open("imagenes/Manu/Tests/imagenTest3.jpg", "rb").read()
 
     detected_faces = AFA.detect_face(img, "detection_01", "recognition_02")
 
@@ -38,8 +51,8 @@ while(not ((subject1_counter == limit) and (subject2_counter == limit))):
         id_cara = [face_info["idFace"]]
         identified_face = AFA.identify_face(id_cara, "id1")
         for face in identified_face:
-            if(float(face.get('confidence')) > 0.8):
-                person_info = AFA.get_PGPerson("id1", face.get('idPerson'))
+            if(float(face.get("confidence")) > 0.8):
+                person_info = AFA.get_PGPerson("id1", face.get("idPerson"))
                 if(person_info.get("name") == "Manuel Marin Peral" and subject1_counter < limit):
                     #Valores de referencia se pueden ajustar en funcion de la calidad de imagen de la camara
                     if((float(face_info.get("blur")) < 1) and (float(face_info.get("noise")) < 1)):

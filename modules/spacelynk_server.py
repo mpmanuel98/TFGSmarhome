@@ -7,6 +7,9 @@ will be able to control the lights, blinds and curtains. Also some
 information from sensors can be obtained.
 """
 
+__version__ = "1.0"
+__author__ = "Manuel Marín Peral"
+
 import xml.etree.ElementTree as ET
 
 import requests
@@ -914,7 +917,7 @@ def get_rain_status():
     -------
     bool
         True: It is raining.
-        False: It isn't raining.
+        False: It isn"t raining.
     """
 
     response = requests.get(url_spaceLYnk, params=params_rain_status)
