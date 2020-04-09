@@ -5,7 +5,7 @@ In this module there are some definitions ir order to send requests to
 the Azure Face API cloud service. With that, the user will be able to
 create person groups, insert people (previously created) in these
 person groups and add faces to each person. After that some tasks like
-face detection or face identification can be performed.
+face detection or face recognition can be performed.
 """
 
 __version__ = "1.0"

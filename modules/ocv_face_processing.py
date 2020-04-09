@@ -161,7 +161,7 @@ class Recognizer:
         """
         Parameters
         ----------
-        recognizer : openCV.recognizer
+        recognizer : string
             The openCV face recognizer that is going to be used.
         faces : list
             List of cropped and scaled images with the region of the
