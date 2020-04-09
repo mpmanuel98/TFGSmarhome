@@ -9,10 +9,6 @@ is detected, the timer refreshs and continues trying to detect someone.
 
 Also a function is defined:
     wait_for_detection(wait_time)
-        This function waits a specific amount of time (wait_time).
-        If that time ends, the function ends.
-        If someone is detected before the time ends, the time
-        starts again.
 """
 
 __version__ = "1.0"
