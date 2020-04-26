@@ -27,9 +27,9 @@ import modules.spacelynk_server as SPL
 
 # Todos los pasos desde crear el PersonGroup hasta comprobar el estado del entrenamiento de este
 #list_person_group()
-#create_person_group("id1", "grupo1", "Grupo de Personas 1", "recognition_02")
+print(AFA.list_person_group())
 #getPersonGroup("id1", True)
-#create_pg_person("id1", "Juan Jose Escarabajal Hinojo", "Persona 2 del Grupo 1")
+AFA.create_PGPerson("id1", "Juan Jose testttt", "Persona 2 del Grupo 1")
 #print(get_PGPerson("id1", "589aa5b8-47ce-4e76-9304-46c7c6ac43ae"))
 #list_PGPerson("id1")
 #add_face_PGPerson("id1", "589aa5b8-47ce-4e76-9304-46c7c6ac43ae", "C:\\Users\\Manuel\\GitRepos\\TFGSmarhome\\imaganes-entrenamiento\\Persona_2\\imagen98.png", "Imagen2")
@@ -88,11 +88,11 @@ except:
     print("No se han detectado caras")
 """
 
-res = FWC.take_snap(FWC.url_pruebas_casa)
+#res = FWC.take_capture(FWC.url_home_tests)
 
 #test = AFA.get_person_group("id1", True)
 
-print(AFA.list_PGPerson("id1"))
+#print(AFA.list_PGPerson("id1"))
 #people = AFA.identify_process(res, "id1", "detection_01", "recognition_02")
 
 #print(people)

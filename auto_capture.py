@@ -20,13 +20,18 @@ from PIL import Image
 import modules.azure_faceapi as AFA
 import modules.foscam_webcams as FWC
 
-manu_directory = os.listdir("training-images/Manuel Marin Peral")
-juanjo_directory = os.listdir("training-images/Juan Jose Escarabajal Hinojo")
-manu_counter = len(manu_directory)
-juanjo_counter = len(juanjo_directory)
+people_registered = AFA.list_PGPerson("id1")
+person1_name = people_registered[0].get("name")
+person2_name = people_registered[1].get("name")
+
+person1_directory = os.listdir("training-images/" + person1_name)
+person2_directory = os.listdir("training-images/" + person2_name)
+
+person1_counter = len(person1_directory)
+person2_counter = len(person2_directory)
 image_limit = 10
 
-while(not ((manu_counter == image_limit) and (juanjo_counter == image_limit))):
+while(not ((person1_counter == image_limit) and (person2_counter == image_limit))):
 
     print("Taking a capture...")
     img = FWC.take_capture(FWC.url_home_tests)
@@ -39,7 +44,7 @@ while(not ((manu_counter == image_limit) and (juanjo_counter == image_limit))):
         for face in identified_face:
             if(float(face.get("confidence")) > 0.8):
                 person_info = AFA.get_PGPerson("id1", face.get("idPerson"))
-                if(person_info.get("name") == "Manuel Marin Peral" and manu_counter < image_limit):
+                if(person_info.get("name") == person1_name and person1_counter < image_limit):
                     if((float(face_info.get("blur")) < 1) and (float(face_info.get("noise")) < 1)):
                         top = face_info["faceRectangle"].get("top")
                         left = face_info["faceRectangle"].get("left")
@@ -50,9 +55,9 @@ while(not ((manu_counter == image_limit) and (juanjo_counter == image_limit))):
                         pil_image = pil_image.crop((left, top, left+width, top+height))
 
                         print("Saving valid image for:", person_info.get("name"))
-                        pil_image.save("training-images/Manuel Marin Peral/image_" + str(manu_counter + 1) + ".png")
+                        pil_image.save("training-images/" + person1_name + "/image_" + str(person1_counter + 1) + ".png")
 
-                if(person_info.get("name") == "Juan Jose Escarabajal Hinojo" and juanjo_counter < image_limit):
+                if(person_info.get("name") == person2_name and person2_counter < image_limit):
                     if((float(face_info.get("blur")) < 1) and (float(face_info.get("noise")) < 1)):
                         top = face_info["faceRectangle"].get("top")
                         left = face_info["faceRectangle"].get("left")
@@ -63,11 +68,11 @@ while(not ((manu_counter == image_limit) and (juanjo_counter == image_limit))):
                         pil_image = pil_image.crop((left, top, left+width, top+height))
 
                         print("Saving valid image for:", person_info.get("name"))
-                        pil_image.save("training-images/Juan Jose Escarabajal Hinojo/image_" + str(juanjo_counter + 1) + ".png")
+                        pil_image.save("training-images/" + person2_name + "/image_" + str(person2_counter + 1) + ".png")
     
-    manu_directory = os.listdir("training-images/Manuel Marin Peral")
-    manu_counter = len(manu_directory)
-    juanjo_directory = os.listdir("training-images/Juan Jose Escarabajal Hinojo")
-    juanjo_counter = len(juanjo_directory)
+    person1_directory = os.listdir("training-images/" + person1_name)
+    person1_counter = len(person1_directory)
+    person2_directory = os.listdir("training-images/" + person2_name)
+    person2_counter = len(person2_directory)
 
 print("Auto-capture process finished.")

@@ -53,7 +53,7 @@ room_lights_off = None
 room_blind_down = None
 
 parser = argparse.ArgumentParser(description="Controlling the room specified.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("-r", "--room_to_control", help="Room to control.", type=str, default="kitchen")
+parser.add_argument("-r", "--room_to_control", help="Room to control.", type=str, default="None")
 args = parser.parse_args()
 
 if(args.room_to_control == "kitchen"):
