@@ -127,8 +127,8 @@ while True:
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
     elif(range2_counter == counter_limit):
-        print("Person of age range 2 detected, opening APP DEPORTIVA")
-        #STV.set_app("")
+        print("Person of age range 2 detected, opening YouTube")
+        #STV.set_app("youtube")
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
     elif(range3_counter == counter_limit):
@@ -137,7 +137,7 @@ while True:
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
     elif(range4_counter == counter_limit):
-        print("Person of age range 4 detected, opening Meteonews TV...")
+        print("Person of age range 4 detected, opening Meteonews.TV...")
         #STV.set_app("meteonews")
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
