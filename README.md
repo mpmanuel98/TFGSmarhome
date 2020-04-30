@@ -1,4 +1,4 @@
-# Bachelor's degree project
+# Bachelor's Degree Final Project
 
 [ES] Reconocimiento de imágenes para la automatización de tareas en el laboratorio Smarthome.
 
