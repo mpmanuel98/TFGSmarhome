@@ -1,6 +1,7 @@
 # Bachelor's degree project
 
 [ES] Reconocimiento de imágenes para la automatización de tareas en el laboratorio Smarthome.
+
 [EN] Image recognition for tasks automation in the Smarthome laboratory.
 
 ## Packages installation
