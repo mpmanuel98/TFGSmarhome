@@ -1,10 +1,11 @@
-# TFG Smarthome
+# Bachelor's degree project
 
-Reconocimiento de imágenes para la automatización de tareas en el laboratorio Smarthome.
+[ES] Reconocimiento de imágenes para la automatización de tareas en el laboratorio Smarthome.
+[EN] Image recognition for tasks automation in the Smarthome laboratory.
 
-## Instalación de paquetes
+## Packages installation
 
-Usar el administrador de paquetes [pip](https://pip.pypa.io/en/stable/) para instalar los paquetes necesarios.
+Use the package-management system [pip](https://pip.pypa.io/en/stable/) to install the required packages.
 
 ```bash
 $ pip install requests
