@@ -19,9 +19,13 @@ from PIL import Image
 """
 Attributes
 ----------
+Authentication credentials.
 Access URLs to the cameras.
 Dictionaries with the requests parameters.
 """
+
+user = "admin"
+password = "AmgCam18*"
 
 url_living_room = "http://192.168.7.225:8894/cgi-bin/CGIProxy.fcgi?"
 url_distributor = "http://192.168.7.224:8893/cgi-bin/CGIProxy.fcgi?"
@@ -30,92 +34,92 @@ url_bedroom = "http://192.168.7.222:8891/cgi-bin/CGIProxy.fcgi?"
 url_home_tests = "http://192.168.1.50:88/cgi-bin/CGIProxy.fcgi?"
 
 params_zoom_in = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "zoomIn"
 }
 
 params_zoom_out = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "zoomOut"
 }
 
 params_zoom_stop = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "zoomStop"
 }
 
 params_movement_stop = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "ptzStopRun"
 }
 
 params_move_up = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "ptzMoveUp"
 }
 
 params_move_down = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "ptzMoveDown"
 }
 
 params_move_left = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "ptzMoveLeft"
 }
 
 params_move_right = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "ptzMoveRight"
 }
 
 params_move_top_left = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "ptzMoveTopLeft"
 }
 
 params_move_top_right = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "ptzMoveTopRight"
 }
 
 params_move_bottom_left = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "ptzMoveBottomLeft"
 }
 
 params_move_bottom_right = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "ptzMoveBottomRight"
 }
 
 params_dev_state = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "getDevState"
 }
 
 params_get_config_motion_detect = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "getMotionDetectConfig1"
 }
 
 params_take_snap = {
-    "usr": "admin",
-    "pwd": "AmgCam18*",
+    "usr": user,
+    "pwd": password,
     "cmd": "snapPicture2"
 }
 
@@ -415,8 +419,8 @@ def move_preset_point(camera_url, preset_point):
         -1: Error.
     """
 
-    params_move_preset_point = {"usr": "admin",
-                                "pwd": "AmgCam18*",
+    params_move_preset_point = {"usr": user,
+                                "pwd": password,
                                 "cmd": "ptzGotoPresetPoint",
                                 "name": preset_point
                                 }

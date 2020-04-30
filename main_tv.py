@@ -15,6 +15,7 @@ Also a function is defined:
 __version__ = "1.0"
 __author__ = "Manuel Marín Peral"
 
+import argparse
 import io
 import time
 
@@ -26,6 +27,25 @@ import modules.azure_faceapi as AFA
 import modules.foscam_webcams as FWC
 import modules.ocv_face_processing as OFP
 import modules.sony_tv as STV
+
+"""
+Parameters
+----------
+Access URL to the camera.
+Access port to the camera.
+"""
+
+parser = argparse.ArgumentParser(description="Camera to use.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("-i", "--ip_to_use", help="IP of the camera to use.", type=str, required=True)
+parser.add_argument("-p", "--port_to_use", help="Port of the camera to use.", type=str, required=True)
+args = parser.parse_args()
+
+camera_url = "http://" + args.ip_to_use + ":" + args.port_to_use + "/cgi-bin/CGIProxy.fcgi?"
+
+"""
+Definitions (functions)
+----------
+"""
 
 def reset_counters():
     """Resets the counters established for each registered person
@@ -49,6 +69,11 @@ def reset_counters():
     
     return 0, 0, 0, 0, 0, 0
 
+"""
+Script
+----------
+"""
+
 print("Starting pre-processing...")
 
 faces, labels, subject_names = OFP.create_recognition_structures("training-images")
@@ -71,7 +96,7 @@ refresh_time = 5
 detected_faces = []
 
 while True:
-    img = FWC.take_capture(FWC.url_home_tests)
+    img = FWC.take_capture(camera_url)
 
     pil_image = Image.open(io.BytesIO(img))
     image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)

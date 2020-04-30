@@ -1,0 +1,109 @@
+PS C:\Users\Manuel\GitRepos\TFGSmarhome> & C:/Users/Manuel/AppData/Local/Programs/Python/Python37/python.exe c:/Users/Manuel/GitRepos/TFGSmarhome/compare_algorithms.py
+Creating the required training structures...
+Processing the image:  imagen83.png
+Processing the image:  imagen86.png
+Processing the image:  imagen98.png
+Processing the image:  imagen12.png
+Processing the image:  imagen14.png
+Processing the image:  imagen20.png
+
+######################
+Recognizing image # 1
+
+Eigenfaces:
+Manuel Marin Peral : 2990.299534908229
+Fisherfaces:
+Manuel Marin Peral : 934.7211670604502
+LBPH:
+Manuel Marin Peral : 40.272920986675544
+
+######################
+Recognizing image # 2
+
+Eigenfaces:
+Manuel Marin Peral : 3956.8812721428167
+Fisherfaces:
+Manuel Marin Peral : 586.6582878960608
+LBPH:
+Manuel Marin Peral : 47.66335813614046
+
+######################
+Recognizing image # 3
+
+Eigenfaces:
+Manuel Marin Peral : 4493.922466761142
+Fisherfaces:
+Manuel Marin Peral : 110.17035567105177
+LBPH:
+Manuel Marin Peral : 48.272327359750264
+
+######################
+Recognizing image # 4
+
+Eigenfaces:
+Manuel Marin Peral : 5138.426104229641
+Fisherfaces:
+Manuel Marin Peral : 914.3216542532246
+LBPH:
+Manuel Marin Peral : 46.476459302258824
+
+######################
+Recognizing image # 5
+
+Eigenfaces:
+Manuel Marin Peral : 2138.60621704674
+Fisherfaces:
+Manuel Marin Peral : 1131.3336272621964
+LBPH:
+Manuel Marin Peral : 40.07987597357044
+
+######################
+Recognizing image # 6
+
+Eigenfaces:
+Manuel Marin Peral : 4963.101725730382
+Fisherfaces:
+Manuel Marin Peral : 1611.836914414212
+LBPH:
+Manuel Marin Peral : 62.39224808642112
+
+######################
+Recognizing image # 7
+
+Eigenfaces:
+Manuel Marin Peral : 2035.1469456529198
+Fisherfaces:
+Manuel Marin Peral : 611.0603731102537
+LBPH:
+Manuel Marin Peral : 50.11932470118568
+
+######################
+Recognizing image # 8
+
+Eigenfaces:
+Manuel Marin Peral : 2839.985584736046
+Fisherfaces:
+Manuel Marin Peral : 672.1723079311569
+LBPH:
+Manuel Marin Peral : 38.996286176939066
+
+######################
+Recognizing image # 9
+
+Eigenfaces:
+Manuel Marin Peral : 3110.01621188408
+Fisherfaces:
+Manuel Marin Peral : 2227.4133631858067
+LBPH:
+Manuel Marin Peral : 80.53213390129486
+
+######################
+Recognizing image # 10
+
+Eigenfaces:
+Manuel Marin Peral : 3533.8115737176795
+Fisherfaces:
+Manuel Marin Peral : 615.6857199732704
+LBPH:
+Manuel Marin Peral : 47.96020445074832
+PS C:\Users\Manuel\GitRepos\TFGSmarhome>

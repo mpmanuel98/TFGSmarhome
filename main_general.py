@@ -19,41 +19,14 @@ import argparse
 import modules.foscam_webcams as FWC
 import modules.spacelynk_server as SPL
 
-
-def wait_for_detection(wait_time, url_room):
-    """Waits some time trying to make a facial detection.
-
-    Parameters
-    ----------
-    wait_time : int
-        Seconds in which the function will be trying to make
-        a facial detection.
-    url_room : string
-        URL of the room where the detection is performed.
-    """
-
-    initial_time = time.time()
-    final_time = time.time()
-    time_elapsed = final_time - initial_time
-
-    while(time_elapsed < wait_time):
-        img = FWC.take_capture(url_room)
-
-        if(AFA.detectPresence(img, "detection_01", "recognition_02")):
-            initial_time = time.time()
-            
-        final_time = time.time()
-        time_elapsed = final_time - initial_time
-
-room_lights_status = None
-room_blind_status = None
-room_lights_on = None
-room_blind_up = None
-room_lights_off = None
-room_blind_down = None
+"""
+Parameters
+----------
+Room to control.
+"""
 
 parser = argparse.ArgumentParser(description="Controlling the room specified.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("-r", "--room_to_control", help="Room to control.", type=str, default="None")
+parser.add_argument("-r", "--room_to_control", help="Room to control.", type=str, required=True)
 args = parser.parse_args()
 
 if(args.room_to_control == "kitchen"):
@@ -82,6 +55,41 @@ elif(args.room_to_control == "livroom"):
     room_blind_down = SPL.livroom_curtain_down()
 else:
     exit()
+
+"""
+Definitions (functions)
+----------
+"""
+
+def wait_for_detection(wait_time, url_room):
+    """Waits some time trying to make a facial detection.
+
+    Parameters
+    ----------
+    wait_time : int
+        Seconds in which the function will be trying to make
+        a facial detection.
+    url_room : string
+        URL of the room where the detection is performed.
+    """
+
+    initial_time = time.time()
+    final_time = time.time()
+    time_elapsed = final_time - initial_time
+
+    while(time_elapsed < wait_time):
+        img = FWC.take_capture(url_room)
+
+        if(AFA.detectPresence(img, "detection_01", "recognition_02")):
+            initial_time = time.time()
+            
+        final_time = time.time()
+        time_elapsed = final_time - initial_time
+
+"""
+Script
+----------
+"""
 
 while True:
     room_motion_alarm = FWC.get_motion_detection_alarm(room_camera_url)

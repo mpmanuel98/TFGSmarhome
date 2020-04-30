@@ -25,7 +25,7 @@ URLs to send the requests.
 #URL structure: http://[Base URL]/[service name]
 #[Base URL]: [IP]/sony
 #Example for avControl: http://192.168.0.1/sony/avControl
-#IP Tv: 192.168.7.228
+#IP TV: 192.168.7.228
 
 pre_shared_key = "1234"
 

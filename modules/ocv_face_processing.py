@@ -181,11 +181,11 @@ class Recognizer:
         self.names = names
 
         if(recognizer == "eigenfaces"):
-            self.recognizer = cv2.face.EigenFaceRecognizer_create() #threshold=4000
+            self.recognizer = cv2.face.EigenFaceRecognizer_create()
         elif(recognizer == "fisherfaces"):
-            self.recognizer = cv2.face.FisherFaceRecognizer_create() #threshold=3500
+            self.recognizer = cv2.face.FisherFaceRecognizer_create()
         else:
-            self.recognizer = cv2.face.LBPHFaceRecognizer_create(radius=1, neighbors=8, grid_x=8, grid_y=8) # threshold=60
+            self.recognizer = cv2.face.LBPHFaceRecognizer_create(radius=1, neighbors=8, grid_x=8, grid_y=8)
             
         self.recognizer.train(faces, np.array(labels))   
 
