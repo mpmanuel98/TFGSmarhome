@@ -27,9 +27,9 @@ import modules.spacelynk_server as SPL
 
 # Todos los pasos desde crear el PersonGroup hasta comprobar el estado del entrenamiento de este
 #list_person_group()
-print(AFA.list_person_group())
+#print(AFA.list_person_group())
 #getPersonGroup("id1", True)
-AFA.create_PGPerson("id1", "Juan Jose testttt", "Persona 2 del Grupo 1")
+#AFA.create_PGPerson("id1", "Juan Jose Escarabajal Hinojo", "Persona 2 del Grupo 1")
 #print(get_PGPerson("id1", "589aa5b8-47ce-4e76-9304-46c7c6ac43ae"))
 #list_PGPerson("id1")
 #add_face_PGPerson("id1", "589aa5b8-47ce-4e76-9304-46c7c6ac43ae", "C:\\Users\\Manuel\\GitRepos\\TFGSmarhome\\imaganes-entrenamiento\\Persona_2\\imagen98.png", "Imagen2")
