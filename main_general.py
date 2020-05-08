@@ -15,7 +15,9 @@ __version__ = "1.0"
 __author__ = "Manuel Marín Peral"
 
 import argparse
+import time
 
+import modules.azure_faceapi as AFA
 import modules.foscam_webcams as FWC
 import modules.spacelynk_server as SPL
 
@@ -80,11 +82,12 @@ def wait_for_detection(wait_time, url_room):
     while(time_elapsed < wait_time):
         img = FWC.take_capture(url_room)
 
-        if(AFA.detectPresence(img, "detection_01", "recognition_02")):
+        if(AFA.detect_presence(img, "detection_01", "recognition_02")):
             initial_time = time.time()
             
         final_time = time.time()
         time_elapsed = final_time - initial_time
+        time.sleep(2)
 
 """
 Script

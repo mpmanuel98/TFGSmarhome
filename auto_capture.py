@@ -15,6 +15,7 @@ __author__ = "Manuel Marín Peral"
 import argparse
 import io
 import os
+import time
 
 from PIL import Image
 
@@ -95,4 +96,5 @@ while(not ((person1_counter == image_limit) and (person2_counter == image_limit)
     person2_directory = os.listdir("training-images/" + person2_name)
     person2_counter = len(person2_directory)
 
+    time.sleep(2)
 print("Auto-capture process finished.")
