@@ -72,7 +72,7 @@ def detect_face(img, detection_model, recognition_model):
     url_req = endpoint + faceia_url_detect
     response = requests.post(url=url_req, headers=headers, params=params, data=img)
     response_json = response.json()
-    
+
     faces_detected = []
     for face in response_json:
         face_item = dict()
@@ -156,20 +156,27 @@ def identify_process(img, id_group, detection_model, recognition_model):
     """
 
     detected_faces = detect_face(img, detection_model, recognition_model)
+
+    if detected_faces is None:
+        return None
+
     face_list = []
     for face in detected_faces:
         face_list.append(face.get("idFace"))
 
     identified_people = identify_face(face_list, id_group)
 
+    if identified_people is None:
+        return None
+
     people = []
     for faces in identified_people:
         person = dict()
         id_person = faces.get("idPerson")
-        name, data = get_PGPerson(id_group, id_person)
+        person_info = get_PGPerson(id_group, id_person)
         person["idPerson"] = id_person
-        person["name"] = name
-        person["data"] = data
+        person["name"] = person_info.get("name")
+        person["data"] = person_info.get("data")
         person["confidence"] = faces.get("confidence")
 
         people.append(person)
@@ -555,7 +562,7 @@ def get_PGPerson(id_group, id_person):
     url_req = endpoint + faceia_url_persongroups + id_group + "/persons/" + id_person
     response = requests.get(url=url_req, headers=headers)
     response_json = response.json()
-
+    
     person_info = dict()
     person_info["name"] = response_json["name"]
     person_info["data"] = response_json["userData"]
