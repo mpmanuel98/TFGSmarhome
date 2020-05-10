@@ -171,3 +171,5 @@ while True:
         #STV.set_app("party")
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
+    else:
+        STV.set_power_status(False)

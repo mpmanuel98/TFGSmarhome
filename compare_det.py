@@ -9,9 +9,9 @@ import modules.azure_faceapi as AFA
 import modules.foscam_webcams as FWC
 import modules.ocv_face_processing as OFP
 
-for i in range(1,110):
-    img = cv2.imread("compare_det/imagen" + str(i) + ".png")
-    data = open("compare_det/imagen" + str(i) + ".png", "rb").read()
+for i in range(1,11):
+    img = cv2.imread("compare_det/image" + str(i) + ".png")
+    data = open("compare_det/image" + str(i) + ".png", "rb").read()
 
     print("\n######################")
     print("Recognizing image #",i)
@@ -21,7 +21,7 @@ for i in range(1,110):
     people_viojon = OFP.detect_faces(img)
 
     if people_viojon is None:
-        print("No faces detected")
+        print("NO FACES DETECTED")
     else:
         print("Number of detected faces:", len(people_viojon))
 
@@ -31,11 +31,11 @@ for i in range(1,110):
 
 
     initial_time_face = time.time()
-    print("\nViola-Jones:")
+    print("\nFace:")
     people_face = AFA.detect_face(data, "detection_01", "recognition_02")
 
     if people_face is None:
-        print("No faces detected")
+        print("NO FACES DETECTED")
     else:
         print("Number of detected faces:", len(people_face))
 

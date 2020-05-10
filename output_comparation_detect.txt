@@ -1,0 +1,112 @@
+PS C:\Users\Manuel\GitRepos\TFGSmarhome> & C:/Users/Manuel/AppData/Local/Programs/Python/Python37/python.exe c:/Users/Manuel/GitRepos/TFGSmarhome/compare_det.py
+
+######################
+Recognizing image # 1
+
+Viola-Jones:
+Number of detected faces: 1
+Time: 0.6218008995056152
+
+Face:
+Number of detected faces: 1
+Time: 1.5520076751708984
+
+######################
+Recognizing image # 2
+
+Viola-Jones:
+Number of detected faces: 1
+Time: 0.4518566131591797
+
+Face:
+Number of detected faces: 1
+Time: 0.7572410106658936
+
+######################
+Recognizing image # 3
+
+Viola-Jones:
+Number of detected faces: 1
+Time: 0.43801069259643555
+
+Face:
+Number of detected faces: 1
+Time: 0.8687992095947266
+
+######################
+Recognizing image # 4
+
+Viola-Jones:
+Number of detected faces: 1
+Time: 0.4459714889526367
+
+Face:
+Number of detected faces: 1
+Time: 0.8173236846923828
+
+######################
+Recognizing image # 5
+
+Viola-Jones:
+Number of detected faces: 1
+Time: 0.4504706859588623
+
+Face:
+Number of detected faces: 1
+Time: 0.8908092975616455
+
+######################
+Recognizing image # 6
+
+Viola-Jones:
+NO FACES DETECTED
+Time: 0.12570810317993164
+
+Face:
+Number of detected faces: 1
+Time: 0.8951597213745117
+
+######################
+Recognizing image # 7
+
+Viola-Jones:
+Number of detected faces: 1
+Time: 0.45316338539123535
+
+Face:
+Number of detected faces: 1
+Time: 0.740802526473999
+
+######################
+Recognizing image # 8
+
+Viola-Jones:
+Number of detected faces: 1
+Time: 0.4640309810638428
+
+Face:
+Number of detected faces: 1
+Time: 1.0589187145233154
+
+######################
+Recognizing image # 9
+
+Viola-Jones:
+Number of detected faces: 1
+Time: 0.460052490234375
+
+Face:
+Number of detected faces: 1
+Time: 1.8504078388214111
+
+######################
+Recognizing image # 10
+
+Viola-Jones:
+Number of detected faces: 1
+Time: 0.4409487247467041
+
+Face:
+Number of detected faces: 1
+Time: 1.0811457633972168
+PS C:\Users\Manuel\GitRepos\TFGSmarhome>

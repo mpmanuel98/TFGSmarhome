@@ -11,8 +11,8 @@ from PIL import Image
 #import cv2
 import numpy as np
 
-for i in range(1, 1000):
-    name = "test" + str(i)
+for i in range(19, 1000):
+    name = "image" + str(i)
     name = name + ".png"
     FWC.take_and_save_capture(FWC.url_home_tests, name)
     time.sleep(1)
