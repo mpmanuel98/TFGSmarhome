@@ -98,14 +98,19 @@ while True:
     room_motion_alarm = FWC.get_motion_detection_alarm(room_camera_url)
 
     if(room_motion_alarm == 2):
-        if(SPL.get_radiation_level() < 1700):
+        if(SPL.get_rain_status() == True):
             if(room_lights_status == False):
                 room_lights_on
                 wait_for_detection(300, room_camera_url)
         else:
-            if(room_blind_status > 75):
-                room_blind_up
-                wait_for_detection(300, room_camera_url)
+            if(SPL.get_radiation_level() < 1700):
+                if(room_lights_status == False):
+                    room_lights_on
+                    wait_for_detection(300, room_camera_url)
+            else:
+                if(room_blind_status > 75):
+                    room_blind_up
+                    wait_for_detection(300, room_camera_url)
     else:
         if(room_lights_status == True):
             room_lights_off
