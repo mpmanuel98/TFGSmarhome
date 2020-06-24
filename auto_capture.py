@@ -30,8 +30,8 @@ Access port to the camera.
 """
 
 parser = argparse.ArgumentParser(description="Camera to use.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("-i", "--ip_to_use", help="IP of the camera to use.", type=str, required=True)
-parser.add_argument("-p", "--port_to_use", help="Port of the camera to use.", type=str, required=True)
+parser.add_argument("-i", "--ip_to_use", help="IP of the camera to use.", type=str, default="192.168.7.226")
+parser.add_argument("-p", "--port_to_use", help="Port of the camera to use.", type=str, default="8895")
 args = parser.parse_args()
 
 camera_url = "http://" + args.ip_to_use + ":" + args.port_to_use + "/cgi-bin/CGIProxy.fcgi?"

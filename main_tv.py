@@ -36,8 +36,8 @@ Access port to the camera.
 """
 
 parser = argparse.ArgumentParser(description="Camera to use.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("-i", "--ip_to_use", help="IP of the camera to use.", type=str, required=True)
-parser.add_argument("-p", "--port_to_use", help="Port of the camera to use.", type=str, required=True)
+parser.add_argument("-i", "--ip_to_use", help="IP of the camera to use.", type=str, default="192.168.7.226")
+parser.add_argument("-p", "--port_to_use", help="Port of the camera to use.", type=str, default="8895")
 args = parser.parse_args()
 
 camera_url = "http://" + args.ip_to_use + ":" + args.port_to_use + "/cgi-bin/CGIProxy.fcgi?"
@@ -91,7 +91,7 @@ range1_counter = 0
 range2_counter = 0
 range3_counter = 0
 range4_counter = 0
-counter_limit = 3
+counter_limit = 2
 refresh_time = 5
 detected_faces = []
 
@@ -133,42 +133,42 @@ while True:
 
     if((person1_counter == counter_limit) and (person2_counter == counter_limit)):
         print(person1_name, "and", person2_name, "recognized, switching source to HDMI 1...")
-        #STV.set_hdmi_source(1)
+        STV.set_hdmi_source(1)
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
     elif(person1_counter == counter_limit):
         print(person1_name, "recognized, opening Netflix...")
-        #STV.set_app("netflix")
+        STV.set_app("netflix")
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
     elif(person2_counter == counter_limit):
         print(person2_name, "recognized, opening Spotify...")
-        #STV.set_app("spotify")
+        STV.set_app("spotify")
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
     elif(range1_counter == counter_limit):
         print("Person of age range 1 detected, opening Clan TV...")
-        #STV.set_app("clantv")
+        STV.set_app("clantv")
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
     elif(range2_counter == counter_limit):
         print("Person of age range 2 detected, opening YouTube")
-        #STV.set_app("youtube")
+        STV.set_app("youtube")
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
     elif(range3_counter == counter_limit):
         print("Person of age range 3 detected, opening Amazon Prime Video...")
-        #STV.set_app("prime-video")
+        STV.set_app("prime-video")
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
     elif(range4_counter == counter_limit):
         print("Person of age range 4 detected, opening Meteonews.TV...")
-        #STV.set_app("meteonews")
+        STV.set_app("meteonews")
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
     elif(len(detected_faces) >= 3):
         print("Large group of people detected, it's time to party!")
-        #STV.set_app("party")
+        STV.set_app("party")
         person1_counter, person2_counter, range1_counter, range2_counter, range3_counter, range4_counter = reset_counters()
         time.sleep(refresh_time)
     else:
