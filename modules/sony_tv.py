@@ -175,6 +175,10 @@ def set_app(app):
         params_uri = [{
             "uri": "com.sony.dtv.ceb-5216"
         }]
+    elif(app == "party"):
+        params_uri = [{
+            "uri": "com.sony.dtv.com.recisio.kfandroid.com.recisio.kfandroid.loading.LoadingActivity"
+        }]         
 
     params = format_params(601, "setActiveApp", params_uri, "1.0")
 

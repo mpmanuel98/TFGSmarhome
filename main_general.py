@@ -31,33 +31,6 @@ parser = argparse.ArgumentParser(description="Controlling the room specified.", 
 parser.add_argument("-r", "--room_to_control", help="Room to control.", type=str, required=True)
 args = parser.parse_args()
 
-if(args.room_to_control == "kitchen"):
-    room_camera_url = FWC.url_kitchen
-    room_lights_status = SPL.get_kitchen_lights_status()
-    room_blind_status = SPL.get_kitchen_blind_status()
-    room_lights_on = SPL.kitchen_lights_on()
-    room_blind_up = SPL.kitchen_blind_up()
-    room_lights_off = SPL.kitchen_lights_off()
-    room_blind_down = SPL.kitchen_blind_down()
-elif(args.room_to_control == "bedroom"):
-    room_camera_url = FWC.url_bedroom
-    room_lights_status = SPL.get_bedroom_lights_status()
-    room_blind_status = SPL.get_bedroom_blind_status()
-    room_lights_on = SPL.bedroom_lights_on()
-    room_blind_up = SPL.bedroom_blind_up()
-    room_lights_off = SPL.bedroom_lights_off()
-    room_blind_down = SPL.bedroom_blind_down()
-elif(args.room_to_control == "livroom"):
-    room_camera_url = FWC.url_living_room
-    room_lights_status = SPL.get_livroom_lights_status()
-    room_blind_status = SPL.get_livroom_curtain_status()
-    room_lights_on = SPL.livroom_lights_on()
-    room_blind_up = SPL.livroom_curtain_up()
-    room_lights_off = SPL.livroom_lights_off()
-    room_blind_down = SPL.livroom_curtain_down()
-else:
-    exit()
-
 """
 Definitions (functions)
 ----------
@@ -83,6 +56,7 @@ def wait_for_detection(wait_time, url_room):
         img = FWC.take_capture(url_room)
 
         if(AFA.detect_presence(img, "detection_01", "recognition_02")):
+            print("Persona detectada")
             initial_time = time.time()
             
         final_time = time.time()
@@ -94,25 +68,84 @@ Script
 ----------
 """
 
-while True:
-    room_motion_alarm = FWC.get_motion_detection_alarm(room_camera_url)
-
-    if(room_motion_alarm == 2):
-        if(SPL.get_rain_status() == True):
-            if(room_lights_status == False):
-                room_lights_on
-                wait_for_detection(300, room_camera_url)
-        else:
-            if(SPL.get_radiation_level() < 1700):
-                if(room_lights_status == False):
-                    room_lights_on
-                    wait_for_detection(300, room_camera_url)
+if(args.room_to_control == "bedroom"):
+    while True:
+        room_motion_alarm = FWC.get_motion_detection_alarm(FWC.url_bedroom)
+        print(room_motion_alarm)
+        if(room_motion_alarm == 2):
+            if(SPL.get_rain_status() == True):
+                if(SPL.get_bedroom_lights_status() == False):
+                    SPL.bedroom_lights_on()
+                    wait_for_detection(10, FWC.url_bedroom)
             else:
-                if(room_blind_status > 75):
-                    room_blind_up
-                    wait_for_detection(300, room_camera_url)
-    else:
-        if(room_lights_status == True):
-            room_lights_off
-        if(room_blind_status < 25):
-            room_blind_down
+                print(SPL.get_radiation_level())
+                if(SPL.get_radiation_level() < 5000):
+                    if(SPL.get_bedroom_lights_status() == False):
+                        SPL.bedroom_lights_on()
+                        wait_for_detection(10, FWC.url_bedroom)
+                else:
+                    if(SPL.get_bedroom_blind_status() > 75):
+                        SPL.bedroom_blind_up()
+                        wait_for_detection(10, FWC.url_bedroom)
+        else:
+            if(SPL.get_bedroom_lights_status() == True):
+                SPL.bedroom_lights_off()
+                time.sleep(5)
+            if(SPL.get_bedroom_blind_status() < 25):
+                SPL.bedroom_blind_down()
+                time.sleep(10)
+
+elif(args.room_to_control == "kitchen"):
+    while True:
+        room_motion_alarm = FWC.get_motion_detection_alarm(FWC.url_kitchen)
+        print(room_motion_alarm)
+        if(room_motion_alarm == 2):
+            if(SPL.get_rain_status() == True):
+                if(SPL.get_kitchen_lights_status() == False):
+                    SPL.kitchen_lights_on()
+                    wait_for_detection(10, FWC.url_kitchen)
+            else:
+                print(SPL.get_radiation_level())
+                if(SPL.get_radiation_level() < 5000):
+                    if(SPL.get_kitchen_lights_status() == False):
+                        SPL.kitchen_lights_on()
+                        wait_for_detection(10, FWC.url_kitchen)
+                else:
+                    if(SPL.get_kitchen_blind_status() > 75):
+                        SPL.kitchen_blind_up()
+                        wait_for_detection(10, FWC.url_kitchen)
+        else:
+            if(SPL.get_kitchen_lights_status() == True):
+                SPL.kitchen_lights_off()
+                time.sleep(5)
+            if(SPL.get_kitchen_blind_status() < 25):
+                SPL.kitchen_blind_down()
+                time.sleep(10)
+elif(args.room_to_control == "livroom"):
+    while True:
+        room_motion_alarm = FWC.get_motion_detection_alarm(FWC.url_living_room)
+        print(room_motion_alarm)
+        if(room_motion_alarm == 2):
+            if(SPL.get_rain_status() == True):
+                if(SPL.get_livroom_lights_status() == False):
+                    SPL.livroom_lights_on()
+                    wait_for_detection(10, FWC.url_livroom)
+            else:
+                print(SPL.get_radiation_level())
+                if(SPL.get_radiation_level() < 5000):
+                    if(SPL.get_livroom_lights_status() == False):
+                        SPL.livroom_lights_on()
+                        wait_for_detection(10, FWC.url_living_room)
+                else:
+                    if(SPL.get_livroom_curtain_status() > 75):
+                        SPL.livroom_curtain_up()
+                        wait_for_detection(10, FWC.url_living_room)
+        else:
+            if(SPL.get_livroom_lights_status() == True):
+                SPL.livroom_lights_off()
+                time.sleep(5)
+            if(SPL.get_livroom_curtain_status() < 25):
+                SPL.livroom_curtain_down()
+                time.sleep(10)
+else:
+    exit()

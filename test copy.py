@@ -8,4 +8,8 @@ from PIL import Image
 import io
 import os
 
-STV.set_power_status(False)
+SPL.livroom_lights_off()
+
+
+
+STV.set_app("clantv")

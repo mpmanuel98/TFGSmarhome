@@ -77,7 +77,7 @@ Script
 print("Starting pre-processing...")
 
 faces, labels, subject_names = OFP.create_recognition_structures("training-images")
-recognizer = OFP.Recognizer("fisherfaces", faces, labels, subject_names)
+recognizer = OFP.Recognizer("eigenfaces", faces, labels, subject_names)
 
 print("Pre-processing finished!")
 
@@ -92,7 +92,7 @@ range2_counter = 0
 range3_counter = 0
 range4_counter = 0
 counter_limit = 2
-refresh_time = 5
+refresh_time = 20
 detected_faces = []
 
 while True:
@@ -108,7 +108,7 @@ while True:
     else:
         for person in people:
             print(person[0], person[1])
-            if(person[1] < 5000.0):
+            if(person[1] < 1000.0):
                 recognized_name = person[0]
                 if(recognized_name == person1_name):
                     person1_counter += 1
