@@ -76,17 +76,17 @@ if(args.room_to_control == "bedroom"):
             if(SPL.get_rain_status() == True):
                 if(SPL.get_bedroom_lights_status() == False):
                     SPL.bedroom_lights_on()
-                    wait_for_detection(10, FWC.url_bedroom)
+                    wait_for_detection(300, FWC.url_bedroom)
             else:
                 print(SPL.get_radiation_level())
-                if(SPL.get_radiation_level() < 5000):
+                if(SPL.get_radiation_level() < 1700):
                     if(SPL.get_bedroom_lights_status() == False):
                         SPL.bedroom_lights_on()
-                        wait_for_detection(10, FWC.url_bedroom)
+                        wait_for_detection(300, FWC.url_bedroom)
                 else:
                     if(SPL.get_bedroom_blind_status() > 75):
                         SPL.bedroom_blind_up()
-                        wait_for_detection(10, FWC.url_bedroom)
+                        wait_for_detection(300, FWC.url_bedroom)
         else:
             if(SPL.get_bedroom_lights_status() == True):
                 SPL.bedroom_lights_off()
@@ -103,17 +103,17 @@ elif(args.room_to_control == "kitchen"):
             if(SPL.get_rain_status() == True):
                 if(SPL.get_kitchen_lights_status() == False):
                     SPL.kitchen_lights_on()
-                    wait_for_detection(10, FWC.url_kitchen)
+                    wait_for_detection(300, FWC.url_kitchen)
             else:
                 print(SPL.get_radiation_level())
-                if(SPL.get_radiation_level() < 5000):
+                if(SPL.get_radiation_level() < 1700):
                     if(SPL.get_kitchen_lights_status() == False):
                         SPL.kitchen_lights_on()
-                        wait_for_detection(10, FWC.url_kitchen)
+                        wait_for_detection(300, FWC.url_kitchen)
                 else:
                     if(SPL.get_kitchen_blind_status() > 75):
                         SPL.kitchen_blind_up()
-                        wait_for_detection(10, FWC.url_kitchen)
+                        wait_for_detection(300, FWC.url_kitchen)
         else:
             if(SPL.get_kitchen_lights_status() == True):
                 SPL.kitchen_lights_off()
@@ -129,17 +129,17 @@ elif(args.room_to_control == "livroom"):
             if(SPL.get_rain_status() == True):
                 if(SPL.get_livroom_lights_status() == False):
                     SPL.livroom_lights_on()
-                    wait_for_detection(10, FWC.url_livroom)
+                    wait_for_detection(300, FWC.url_livroom)
             else:
                 print(SPL.get_radiation_level())
-                if(SPL.get_radiation_level() < 5000):
+                if(SPL.get_radiation_level() < 1700):
                     if(SPL.get_livroom_lights_status() == False):
                         SPL.livroom_lights_on()
-                        wait_for_detection(10, FWC.url_living_room)
+                        wait_for_detection(300, FWC.url_living_room)
                 else:
                     if(SPL.get_livroom_curtain_status() > 75):
                         SPL.livroom_curtain_up()
-                        wait_for_detection(10, FWC.url_living_room)
+                        wait_for_detection(300, FWC.url_living_room)
         else:
             if(SPL.get_livroom_lights_status() == True):
                 SPL.livroom_lights_off()

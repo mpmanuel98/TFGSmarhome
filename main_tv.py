@@ -91,8 +91,8 @@ range1_counter = 0
 range2_counter = 0
 range3_counter = 0
 range4_counter = 0
-counter_limit = 2
-refresh_time = 20
+counter_limit = 3
+refresh_time = 3600
 detected_faces = []
 
 while True:
